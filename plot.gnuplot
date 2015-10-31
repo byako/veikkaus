@@ -5,8 +5,10 @@ set output targetfn
 
 # add bg grid
 set style line 102 lc rgb '#767779' lt 0 lw 1
-set grid back ls 102
-
+set xtics 1
+set ytics 5
+set grid xtics ytics back ls 102
+set xrange [1:39]
 set title sourcefn
-plot sourcefn with lines, avgfn with lines
+plot sourcefn with lines title "Total", avgfn with lines title "Average", primfn with lines title "Primary'
 
