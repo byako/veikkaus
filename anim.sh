@@ -19,6 +19,4 @@ done;
 echo "creating new animated gif 'anim.gif'"
 convert -delay 20 png/* anim.gif
 
-echo "clean-up"
-rm png/*
 echo "Done"

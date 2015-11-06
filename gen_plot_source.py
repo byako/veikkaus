@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
 from __future__ import print_function
+import sys
 import json
+import getopt
 import os.path
 
 COMMON_STATS = [
@@ -27,10 +29,20 @@ ADDITIONAL_STATS = [
 
 AVERAGE_STATS = 0
 YEARS = [ "2010", "2011", "2012", "2013", "2014", "2015"]
+QUIET = False
+
+def print_usage():
+    """Print usage manual"""
+    print("\n Usage: ")
+    print("-h prints this help")
+    print("-q do not print out progress")
+    sys.exit(0)
 
 def process_results():
     """Count in numbers from draw round"""
     global AVERAGE_STATS
+    global QUIET
+    counter = 0;
     for year in YEARS:
         for week in range(1, 54):
             filename = "results/lotto_" + str(year) + "_" + str(week) + ".json"
@@ -39,10 +51,10 @@ def process_results():
             plot_c_filename = "plot/" + str(year) + "_" + str(week).zfill(2) + "_c.data"
             plot_avg_filename = "plot/" + str(year) + "_" + str(week).zfill(2) + "_avg.data"
             if os.path.exists(filename):
-                print("found file: " + filename)
+                print("found file: " + filename) if QUIET == False else 0
                 if os.path.exists(plot_p_filename) or os.path.exists(plot_p_filename) or\
                    os.path.exists(plot_p_filename or os.path.exists(plot_avg_filename)):
-                    print("FOUND OUTPUT file. SKIPPING")
+                    print("FOUND OUTPUT file. SKIPPING") if QUIET == False else 0
                     continue
                 with open(filename) as json_file:
                     jsonData = json.load(json_file)
@@ -58,7 +70,9 @@ def process_results():
                 for tmpIdx in range(0,38):
                     tmpAvg += COMMON_STATS[tmpIdx]
                 AVERAGE_STATS = tmpAvg / 38
+                counter += 1
                 save_to_file(plot_p_filename, plot_a_filename, plot_c_filename, plot_avg_filename)
+    print("Total: " + str(counter)) if QUIET == False else 0
 
 def save_to_file(prim, addit, comm, avg):
     """Save counted values to corresponding file"""
@@ -83,5 +97,16 @@ def save_to_file(prim, addit, comm, avg):
     except IOError, e:
         print('Could not open / write / save to file(s):' + str(e))
 
+def parse_arguments(arguments):
+    """Parse supported args"""
+    global QUIET
+    optlist, args = getopt.getopt(arguments, 'ha:qa:')
+    for o, a in optlist:
+        if o == '-h':
+            print_usage()
+        elif o == '-q':
+            QUIET = True
+
 if __name__ == "__main__":
+    parse_arguments(sys.argv[1:])
     process_results()
