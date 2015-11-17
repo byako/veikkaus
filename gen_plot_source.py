@@ -52,10 +52,6 @@ def process_results():
             plot_avg_filename = "plot/" + str(year) + "_" + str(week).zfill(2) + "_avg.data"
             if os.path.exists(filename):
                 print("found file: " + filename) if QUIET == False else 0
-                if os.path.exists(plot_p_filename) or os.path.exists(plot_p_filename) or\
-                   os.path.exists(plot_p_filename or os.path.exists(plot_avg_filename)):
-                    print("FOUND OUTPUT file. SKIPPING") if QUIET == False else 0
-                    continue
                 with open(filename) as json_file:
                     jsonData = json.load(json_file)
                 for draw in jsonData["draws"]:
@@ -70,6 +66,10 @@ def process_results():
                 for tmpIdx in range(0,38):
                     tmpAvg += COMMON_STATS[tmpIdx]
                 AVERAGE_STATS = tmpAvg / 38
+                if os.path.exists(plot_p_filename) or os.path.exists(plot_p_filename) or\
+                   os.path.exists(plot_p_filename or os.path.exists(plot_avg_filename)):
+                    print("FOUND OUTPUT file. SKIPPING") if QUIET == False else 0
+                    continue
                 counter += 1
                 save_to_file(plot_p_filename, plot_a_filename, plot_c_filename, plot_avg_filename)
     print("Total: " + str(counter)) if QUIET == False else 0
