@@ -1,0 +1,40 @@
+a, a:hover, a:visited, a:active {
+	outline:none;
+	border:none;
+	text-decoration:none;
+	color:#EEEEEE;
+}
+body {
+#	background-color:#405080;
+	background-color:#304050;
+	color:#CFCFCF;
+}
+
+div.nav
+{
+	float:left;
+	width:30px;
+	height:20px;
+	text-align:center;
+	border:1px solid #8080AA;
+	white-space:pre-wrap;
+	background-color: #ffffff;
+}
+div.navBar
+{
+	float:left;
+	width:5px;
+	height:20px;
+	text-align:center;
+	border:1px solid #8080AA;
+	white-space:pre-wrap;
+	background-color: #ffffff;
+}
+div.navBar:hover
+{
+	background-color: #8080AA;
+}
+div.nav:hover
+{
+	background-color: #8080AA;
+}
