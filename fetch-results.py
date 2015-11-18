@@ -12,7 +12,7 @@ import os.path
 
 # the veikkaus site address
 VEIKKAUS_HOST = "https://www.veikkaus.fi"
-LATEST_FILE = 'latest.txt'
+LATEST_FILE = 'latest.json'
 
 # required headers
 VEIKKAUS_HEADERS = {
@@ -35,7 +35,7 @@ def append_to_latest(text):
         try:
             print('appending to ' + LATEST_FILE + ' : ' + text)
             of = open(LATEST_FILE, 'a')
-            of.write(text + '\n')
+            of.write(text + ',\n')
             of.flush()
             of.close()
         except IOError, e:
@@ -81,14 +81,14 @@ def parse_arguments(arguments):
 def get_draw(params):
     """Fetch draw result from VEIKKAUS_HOST"""
     yearN1 = int(params["year"])
-    weekN1 = int(params["week"])
+    weekN1 = int(params["week"]) - 1
     lastWeek = datetime.date(yearN1, 12, 27).isocalendar()[1]
-    if weekN1 > lastWeek:
+    if weekN1 >= lastWeek:
         print('Year %d had only %d weeks' % (yearN1, lastWeek))
         return
     elif weekN1 == lastWeek:
         yearN2 = yearN1 + 1
-        weekN2 = 1
+        weekN2 = 0
     else:
         yearN2 = yearN1
         weekN2 = weekN1 + 1
@@ -96,6 +96,7 @@ def get_draw(params):
                                                       "%Y %W %w %H %M"))
     weekEnd = "%.0f000" % time.mktime(time.strptime("%d %d 1 0 0" % (yearN2, weekN2),
                                                     "%Y %W %w %H %M"))
+    print("Fetching results for %s / %s" % (params["year"], params["week"]))
     r = requests.get(VEIKKAUS_HOST + "/api/v1/draw-games/draws?game-names=LOTTO&status=" +
                      "RESULTS_AVAILABLE&date-from=%s&date-to=%s" % (weekStart, weekEnd),
                      verify=True, headers=VEIKKAUS_HEADERS)
@@ -103,23 +104,19 @@ def get_draw(params):
         try:
             j = r.json()
             for draw in j["draws"]:
-                print("game: %s, index: %s, draw: %s, status: %s" %
-                      (draw["gameName"], draw["brandName"], draw["id"], draw["status"]))
-                latest_result = '' + params["year"] +\
-                                ',' + params["week"] +\
-                                '-1,' + "01.01" + ", "
-                for result in draw["results"]:
-                    print("result:\t", end='')
-                    for rprim in result["primary"]:
-                        print("%2s " % rprim, end='')
-                        latest_result = latest_result + rprim + "  "
-                    print(' + ', end='')
-                    latest_result += ',+, '
-                    for rsec in result["secondary"]:
-                        print("%2s " % rsec, end='')
-                        latest_result = latest_result + rsec + "  "
-                    print('')
-                print('')
+                latest_result = json.loads("{\"year\":1970,\"week\":1,\"numbers\":[],\"adds\":[],\"date\":\"01.01\"}")
+                drawTime = time.localtime(draw["drawTime"] / 1000)
+                latest_result["year"] = time.strftime("%Y",drawTime)
+                latest_result["week"] = time.strftime("%W",drawTime)
+                latest_result["date"] = time.strftime("%m.%d",drawTime)
+                for prim in draw["results"][0]["primary"]:
+                    latest_result["numbers"].append(int(prim))
+                for addit in draw["results"][0]["secondary"]:
+                    latest_result["adds"].append(int(addit))
+                print("game: %s, index: %s, draw: %s (%s / %s.%s)" %
+                      (draw["gameName"], draw["brandName"], draw["id"],
+                      latest_result["week"], latest_result["year"], latest_result["date"]))
+                print(" %s / %s" % (json.dumps(latest_result["numbers"]), json.dumps(latest_result["adds"])))
                 for prize in draw["prizeTiers"]:
                     print("%6d : %8d.%02d : %10s" % (prize["shareCount"],
                                                      prize["shareAmount"] / 100,
@@ -130,7 +127,7 @@ def get_draw(params):
                     print('')
             if True == save_to_file('results/lotto_' + params["year"] + '_' + params["week"] +\
                        '.json', r.text):
-                append_to_latest(latest_result)
+                append_to_latest(json.dumps(latest_result,separators=(',',':')))
         except:
             print("request failed")
     else:
@@ -142,8 +139,8 @@ def starter(arguments):
     params = parse_arguments(arguments)
     if params["week"] == "54" or params["year"] == "1970":
         print_usage()
-    elif int(params["year"]) < 2010:
-        print("oldest results are from 2010")
+    elif int(params["year"]) < 2009:
+        print("oldest results are from 2009")
     elif int(params["year"]) > datetime.datetime.now().year:
         print("You want results from future? I don't think so.")
     elif int(params["week"]) < 1 or int(params["week"]) > 53:
@@ -152,7 +149,6 @@ def starter(arguments):
                            datetime.datetime.now().isocalendar()[1]:
         print("Week number is too big for this year")
     else:
-        print("Fetching results for %s / %s" % (params["year"], params["week"]))
         get_draw(params)
         sys.exit(0)
     print_usage()
