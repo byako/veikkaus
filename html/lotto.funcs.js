@@ -56,13 +56,22 @@ function plotStatsN(toPlot) {
     );
 };
 
+function swapImage(roundNumber) {
+    if (roundNumber < results.length) {
+        var weekn = parseInt(results[roundNumber].week)+1;
+        var yearn = results[roundNumber].year;
+        // 2015_46_c.data.png
+        document.getElementById("gnuplotted").setAttribute("src","png/" + yearn + "_" + weekn + "_c.data.png");
+    }
+}
+
 function processStats() {
     var table_ = document.getElementById("_oldResultsTable_");
     if (table_) {
         table_.onclick = function(e) {
             var target = (e || window.event).target;
             fieldsShowRound(target.roundNumber);
-            plotStatsN(d6[target.roundNumber-1]);
+            swapImage(target.roundNumber);
         }
         for (var i=0; i < roundsCounter; i++) {
             var row_ = table_.insertRow(i);
