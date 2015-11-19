@@ -20,7 +20,7 @@ done;
 if [ "x$recreate" == "x1" ]; then
     [ -f $output_file ] && rm $output_file
     echo "creating new animated gif: $output_file"
-#    convert -delay 20 png/* $output_file
+    convert -delay 20 png/* $output_file
 fi
 
 echo "Done"

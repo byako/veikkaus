@@ -28,7 +28,7 @@ ADDITIONAL_STATS = [
 ]
 
 AVERAGE_STATS = 0
-YEARS = [ "2010", "2011", "2012", "2013", "2014", "2015"]
+YEARS = [ "2009", "2010", "2011", "2012", "2013", "2014", "2015"]
 QUIET = False
 
 def print_usage():
