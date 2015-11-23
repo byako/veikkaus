@@ -12,7 +12,6 @@ import os.path
 
 # the veikkaus site address
 VEIKKAUS_HOST = "https://www.veikkaus.fi"
-LATEST_FILE = 'latest.json'
 
 # required headers
 VEIKKAUS_HEADERS = {
@@ -29,8 +28,9 @@ def print_usage():
     print("-y <year number[2010..$CurYear]>")
     sys.exit(0)
 
-def append_to_latest(text):
+def append_to_latest(text, params):
     """Append to the end of $LATEST_FILE text string"""
+    LATEST_FILE='latest_'+params["game"]+'.json';
     if os.path.exists(LATEST_FILE):
         try:
             print('appending to ' + LATEST_FILE + ' : ' + text)
@@ -62,12 +62,13 @@ def save_to_file(filename, text):
 
 def parse_arguments(arguments):
     """Get week number and year out of arguments"""
-    optlist, args = getopt.getopt(arguments, 'ha:w:y:')
+    optlist, args = getopt.getopt(arguments, 'ha:w:y:g:')
     params = {
         "username":"",
         "passowrd":"",
         "year":"1970",
-        "week":"54"
+        "week":"54",
+        "game":"unknown"
     }
     for o, a in optlist:
         if o == '-h':
@@ -76,6 +77,11 @@ def parse_arguments(arguments):
             params["year"] = a
         elif o == '-w':
             params["week"] = a
+        elif o == '-g':
+            if a == "lotto":
+                params["game"] = "LOTTO"
+            elif a == "ejackpot":
+                params["game"] = "EJACKPOT"
     return params
 
 def get_draw(params):
@@ -97,7 +103,7 @@ def get_draw(params):
     weekEnd = "%.0f000" % time.mktime(time.strptime("%d %d 1 0 0" % (yearN2, weekN2),
                                                     "%Y %W %w %H %M"))
     print("Fetching results for %s / %s" % (params["year"], params["week"]))
-    r = requests.get(VEIKKAUS_HOST + "/api/v1/draw-games/draws?game-names=LOTTO&status=" +
+    r = requests.get(VEIKKAUS_HOST + "/api/v1/draw-games/draws?game-names=EJACKPOT&status=" +
                      "RESULTS_AVAILABLE&date-from=%s&date-to=%s" % (weekStart, weekEnd),
                      verify=True, headers=VEIKKAUS_HEADERS)
     if r.status_code == 200:
@@ -122,12 +128,13 @@ def get_draw(params):
                                                      prize["shareAmount"] / 100,
                                                      prize["shareAmount"] % 100,
                                                      prize["name"]), end='')
-                    if prize["multiplier"] == True:
-                        print(" : x2", end='')
+                    if params["game"] == "LOTTO":
+                        if prize["multiplier"] == True:
+                            print(" : x2", end='')
                     print('')
-            if True == save_to_file('results/lotto_' + params["year"] + '_' + params["week"] +\
+            if True == save_to_file('results/' + params["game"] + '_' + params["year"] + '_' + params["week"] +\
                        '.json', r.text):
-                append_to_latest(json.dumps(latest_result,separators=(',',':')))
+                append_to_latest(json.dumps(latest_result,separators=(',',':')), params)
         except:
             print("request failed")
     else:
@@ -148,6 +155,8 @@ def starter(arguments):
     elif params["year"] == str(datetime.datetime.now().year) and int(params["week"]) > \
                            datetime.datetime.now().isocalendar()[1]:
         print("Week number is too big for this year")
+    elif params["game"] != "EJACKPOT" and params["game"] != "LOTTO":
+        print("Supported games: ejackpot, lotto");
     else:
         get_draw(params)
         sys.exit(0)

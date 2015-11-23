@@ -63,9 +63,9 @@ def process_results():
                             COMMON_STATS[int(rsec)-1] += 1
                             ADDITIONAL_STATS[int(rsec)-1] += 1
                 tmpAvg = 0
-                for tmpIdx in range(0,38):
+                for tmpIdx in range(0,39):
                     tmpAvg += COMMON_STATS[tmpIdx]
-                AVERAGE_STATS = tmpAvg / 38
+                AVERAGE_STATS = tmpAvg / 39
                 if os.path.exists(plot_p_filename) or os.path.exists(plot_p_filename) or\
                    os.path.exists(plot_p_filename or os.path.exists(plot_avg_filename)):
                     print("FOUND OUTPUT file. SKIPPING") if QUIET == False else 0
@@ -81,7 +81,7 @@ def save_to_file(prim, addit, comm, avg):
         af = open(addit, 'w')
         cf = open(comm, 'w')
         avgf = open(avg, 'w')
-        for num in range(1, 39):
+        for num in range(1, 40):
             pf.write(str(num) + "\t" + str(PRIMARY_STATS[num-1]) + "\n")
             af.write(str(num) + "\t" + str(ADDITIONAL_STATS[num-1]) + "\n")
             cf.write(str(num) + "\t" + str(COMMON_STATS[num-1]) + "\n")
