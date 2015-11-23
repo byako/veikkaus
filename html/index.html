@@ -5,7 +5,7 @@
     <title>Lotto results stats and processing tool from Byako</title>
     <script language="javascript" type="text/javascript" src="jquery.min.js"></script>
     <script language="javascript" type="text/javascript" src="jquery.flot.js"></script>
-    <script language="javascript" type="text/javascript" src="lotto.funcs.js"></script>
+    <script language="javascript" type="text/javascript" src="lotto_funcs.js"></script>
     <script language="javascript" type="text/javascript" src="lotto_ready.js"></script>
     <link href="lotto-style.css" rel="stylesheet" type="text/css" />
 </head>
@@ -40,21 +40,21 @@
         <div style="display:inline-block;"><!-- horizontal wrapper -->
         <img id="gnuplotted" src="png/latest.png" />
 
-            <div id="_oldResults_" style="width:1020px"> <!-- main container for dynamic log -->
-                <div id="_oldResultsDiv_" style="width:100%;height:600px;overflow:auto;"> <!-- scrollable results table -->
-                    <table id="_oldResultsTable_" style="width:1000px;" tabindex"1">
+            <div id="_oldResults_"> <!-- main container for dynamic log -->
+                <div id="_oldResultsDiv_" style="height:600px;overflow:auto;"> <!-- scrollable results table -->
+                    <table id="_oldResultsTable_" tabindex"1">
                     </table><br>
                 </div>
                 <div id="_oldResultsStatsDiv_" style=""> <!-- non-scrollable bottom stats and selection table -->
-                    <table id="_oldResultsStatsTable_" style="width:1000px">
+                    <table id="_oldResultsStatsTable_" >
                     </table>
                 </div>
-            <span>
-                <div style="display:inline;">Max:</div><div id="maxDiv" style="display:inline;">a</div>
-                <div style="display:inline;">Avg:</div><div id="avgDiv" style="display:inline;">a</div>
-                <div style="display:inline;">Min:</div><div id="minDiv" style="display:inline;">a</div>
-                <div style="display:inline;">Coverage:&nbsp</div><div id="coverageDiv" style="display:inline;">1</div>
-            </span>
+                <span>
+                    <div style="display:inline;">Max:</div><div id="maxDiv" style="display:inline;">a</div>
+                    <div style="display:inline;">Avg:</div><div id="avgDiv" style="display:inline;">a</div>
+                    <div style="display:inline;">Min:</div><div id="minDiv" style="display:inline;">a</div>
+                    <div style="display:inline;">Coverage:&nbsp</div><div id="coverageDiv" style="display:inline;">1</div>
+                </span>
             </div>
             <div id="_logs_" style="width:1000px;height:200px;display:none;" visibility="hidden"></div>
 

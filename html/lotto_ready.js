@@ -3,11 +3,17 @@ function loadResults()
     var xmlhttp;
     var resCounter = [];
     var resAddCounter = [];
+
+    if (game != "EJACKPOT" && game != "LOTTO") {
+        return;
+    }
+
     // initialize d1 & d2
-    for (var i=1; i<40; i++) {
+    for (var i=1; i <= games[game].numbersLimit; i++) {
         d1.push(new Array(i,0));
         d2.push(new Array(i,0));
     }
+    console.log("d1 has " + d1.length + " elements");
     if (window.XMLHttpRequest) {
         xmlhttp=new XMLHttpRequest();
     } else {
@@ -24,11 +30,11 @@ function loadResults()
             for (var i=0; i < roundsCounter; i++) {
                 // add main appearances
                 for (var j=0; j < results[i].numbers.length; j++) {
-                    main = results[i].numbers[j];
+                    var main = results[i].numbers[j];
                     d1[main-1][1] = d1[main-1][1] + 1;
                 }
                 for (var j=0; j < results[i].adds.length; j++) {
-                    addit = results[i].adds[j];
+                    var addit = results[i].adds[j];
                     d1[addit-1][1] = d1[addit-1][1] + 1;
                     d2[addit-1][1] = d2[addit-1][1] + 1;
                 }
@@ -42,12 +48,10 @@ function loadResults()
         }
     }
 
-    xmlhttp.open("GET","latest.json",true);
+    xmlhttp.open("GET","latest_" + game + ".json",true);
     xmlhttp.send();
 }
 
 $(document).ready(function() {
     loadResults();
-//    addNavDivs();
-//    fieldsShowStats()
 });

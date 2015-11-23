@@ -4,6 +4,29 @@ var coverage = 1; // calculated based on length of "numbersSelected"
 var roundsCounter = 0;
 var selectedRound = 0;
 
+var game = "EJACKPOT";
+var games = {
+    "EJACKPOT": {
+        "fieldsRows":9,
+        "fieldsColumns":6,
+        "drawNumbersLimit":5,
+        "additionalLimit":2,
+        "numbersStart":1,
+        "numbersLimit":50,
+        "additionalNumbersStart":1,
+        "additionalNumbersLimit":10,
+    },
+    "LOTTO": {
+        "fieldsRows":6,
+        "fieldsColumns":7,
+        "drawNumbers":5,
+        "drawAdditional":2,
+        "numbersStart":1,
+        "numbersLimit":39,
+        "additionalNumbersStart":1,
+        "additionalNumbersLimit":39,
+    }
+}
 
 var results = [];
 
@@ -15,11 +38,11 @@ var d1 = [];
 // d2: number times a number has appeared as an additional
 var d2 = [];
 // d3: the average number from d1
-var d3 = [ [1,0], [39,0] ];
+var d3 = [ [1,0], [2,0] ];
 // d4: the minimum number from d1
-var d4 = [ [1,0], [39,0] ];
+var d4 = [ [1,0], [2,0] ];
 // d5: the maximum number from d1 
-var d5 = [ [1,0], [39,0] ];
+var d5 = [ [1,0], [2,0] ];
 // d6: number of times number has appeared by round
 var d6 = [];
 
@@ -28,12 +51,12 @@ function setMinAvgMax() {
     var min1 = 1000;
     var max1 = 0;
 
-    for (var i=0; i<39; i++) {
+    for (var i=0; i<games[game].numbersLimit; i++) {
         if (d1[i][1] > max1) max1 = d1[i][1];
         if (d1[i][1] < min1) min1 = d1[i][1];
         avg1 += d1[i][1];
     }
-    avg1 /= 39;
+    avg1 /= (games[game].numbersLimit);
 
     d3[0][1] = avg1;
     d3[1][1] = avg1;
@@ -43,18 +66,6 @@ function setMinAvgMax() {
     d5[1][1] = max1;
 
 }
-
-var statsPlot;
-function plotStatsN(toPlot) {
-    alert("plotting : " + toPlot);
-    statsPlot = $.plot($("#_stats_"), [ toPlot ], { xaxis: { ticks:[
-        1,2,3,4,5,6,7,8,9,10,
-        11,12,13,14,15,16,17,18,19,20,
-        21,22,23,24,25,26,27,28,29,30,
-        31,32,33,34,35,36,37,38,39
-        ]} }
-    );
-};
 
 function swapImage(roundNumber) {
     if (roundNumber < results.length) {
@@ -77,10 +88,16 @@ function processStats() {
             var row_ = table_.insertRow(i);
             row_.id = "orRow" + i;
             results[i].numbers.sort();
-            for (j=1; j<40; j++) {
+            for (j=1; j<=games[game].numbersLimit; j++) {
                 var cell_ = row_.insertCell(j-1);
-                if (results[i].numbers.indexOf(j) >= 0 || results[i].adds.indexOf(j) >= 0) {
+                if (results[i].numbers.indexOf(j) >= 0) {// || results[i].adds.indexOf(j) >= 0) {
                     cell_.innerHTML=String(j);
+                }
+                if (results[i].adds.indexOf(j) >= 0) {
+                    cell_.style.background="#383";
+                    if (game == "LOTTO") {
+                        cell_.innerHTML = String(j);
+                    }
                 }
                 cell_.width="20px";
                 cell_.height="20px";
@@ -88,13 +105,6 @@ function processStats() {
                 cell_.style.textAlign="center";
             }
         }
-    }
-}
-
-function addNavDivs() {
-    for (i=0;i < roundsCounter;i++) {
-        $("#roundNav").append("<div class='nav' id='l"+i+"' onmouseover='updateLog(event)'>"+i+"</div>");
-//        $("#sliderDiv").append("<div class='navBar' id='l"+i+"' onmouseover='updateLog(event)'></div>");
     }
 }
 
@@ -126,47 +136,28 @@ function decreaseHeight(id) {
     }
 }
 
-function updateLog(e) {
-    temp_ = window[e.target.id];
-    min_ = 1000;
-    max_ = 0;
-    sum_ = 0;
-    for (i=0;i<39;i++) {
-        if (temp_[i][1] > max_) max_ = temp_[i][1];
-        if (temp_[i][1] < min_) min_ = temp_[i][1];
-        sum_ += temp_[i][1];
-    }
-    avg_ = sum_ / 39;
-    $.plot($("#_logs_"), [window[e.target.id],[[0,min_],[39,min_]],[[0,max_],[39,max_]],[[0,avg_],[39,avg_]]
-        ], { xaxis: { ticks:[
-                1,2,3,4,5,6,7,8,9,10,
-                11,12,13,14,15,16,17,18,19,20,
-                21,22,23,24,25,26,27,28,29,30,
-                31,32,33,34,35,36,37,38,39
-        ]} }
-        );
-}
-
 function addFields() {
+    console.log("adding fields setup");
     var table_ = document.getElementById("fieldsTable");
     if (table_) {
         var rows_ = Array();
 
-        for (var i=0; i<7; i++) {
+        for (var i=0; i<games[game].fieldsRows; i++) {
             rows_[i] = table_.insertRow(i);
         }
-
-        for (var i=0; i<6; i++) {
-            for (var j=0;j<7;j++) {
-                if (i > 2 && j == 6) break;
-                var cell_ = rows_[j].insertCell(i);
-                var idx= 1 + i + j*6;
+        console.log("added " + rows_.length + " rows");
+        for (var i=0; i < games[game].fieldsRows; i++) {
+            for (var j=0; j < games[game].fieldsColumns; j++) {
+                if (i > 2 && j == games[game].fieldsColumns) break;
+                var cell_ = rows_[i].insertCell(j);
+                var idx= 1 + j + i*games[game].fieldsColumns;
+                if (idx > games[game].numbersLimit) break;
                 cell_.id = "cell" + String(idx);
                 cell_.width="20px";
                 cell_.height="20px";
                 cell_.selected = false;
                 cell_.style.textAlign="center";
-                cell_.innerHTML=String(i+1+j*6);
+                cell_.innerHTML=String(idx);
             }
         }
     }
@@ -186,12 +177,12 @@ function selectNumber(e) {
             target.selected = true;
             target.setAttribute('style', 'background-color: #386');
             numbersSelected.push(newNumber);
-            var newLength = numbersSelected.length;
-            if (newLength > 7) {
-                coverage = coverage * newLength / (newLength - 7);
+/*            var newLength = numbersSelected.length;
+            if (newLength >= numbersLimit) {
+                coverage = coverage * newLength / (newLength - numbersLimit);
             } else {
                 coverage = 1;
-            }
+            }*/
         } else {
             document.getElementById("cell" + newNumber).selected = false;
             if (document.getElementById("cell" + newNumber).style.backgroundColor == "#AAFFAA" ){
@@ -203,12 +194,12 @@ function selectNumber(e) {
             target.style.backgroundColor = document.getElementsByTagName('body')[0].style.backgroundColor;
             var i = numbersSelected.indexOf(newNumber);
             numbersSelected.splice(i,1);
-            var newLength = numbersSelected.length;
+/*            var newLength = numbersSelected.length;
             if (newLength > 7) {
                 coverage = coverage * (newLength - 6) /( newLength + 1);
             } else {
                 coverage = 1;
-            }
+            }*/
         }
         document.getElementById("coverageDiv").innerHTML = coverage;
         if (numbersSelected.length == 7) {
@@ -289,6 +280,17 @@ function fieldsShowRound(roundNumber) {
             cell_.style.color="#000";
         }
     }
+    for (var i=0; i < results[roundNumber].adds.length;i++) {
+        var cell_ = document.getElementById("cell" + String(results[roundNumber].adds[i]));
+        if (cell_) {
+            if (cell_.selected == true) {
+                cell_.style.backgroundColor="#ffFFAA";
+            } else {
+                cell_.style.backgroundColor="#f99";
+            }
+            cell_.style.color="#000";
+        }
+    }
     tr_ = document.getElementById("orRow" + roundNumber);
     if (tr_) {
         tr_.style.backgroundColor = "#fff";
@@ -326,7 +328,7 @@ function populateOldResultsStats() {
         }
         var cell_ = rows_[1].insertCell(0);
         cell_.height="25px";
-        for (var i=0; i<39; i++) {
+        for (var i=0; i<games[game].numbersLimit; i++) {
             cell_ = rows_[0].insertCell(i);
             cell_.id = "oldResultsStatsCell" + String(i+1);
             cell_.style.textAlign="center";
