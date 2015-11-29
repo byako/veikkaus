@@ -103,7 +103,7 @@ def get_draw(params):
     weekEnd = "%.0f000" % time.mktime(time.strptime("%d %d 1 0 0" % (yearN2, weekN2),
                                                     "%Y %W %w %H %M"))
     print("Fetching results for %s / %s" % (params["year"], params["week"]))
-    r = requests.get(VEIKKAUS_HOST + "/api/v1/draw-games/draws?game-names=EJACKPOT&status=" +
+    r = requests.get(VEIKKAUS_HOST + "/api/v1/draw-games/draws?game-names=" + params["game"] + "&status=" +
                      "RESULTS_AVAILABLE&date-from=%s&date-to=%s" % (weekStart, weekEnd),
                      verify=True, headers=VEIKKAUS_HEADERS)
     if r.status_code == 200:
