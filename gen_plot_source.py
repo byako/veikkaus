@@ -6,7 +6,7 @@ import json
 import getopt
 import os.path
 
-GAMES = { "LOTTO":{"numbersLimit":39}, "EJACKPOT":{"numbersLimit":50} }
+GAMES = {"LOTTO":{"numbersLimit":39, "additionalLimit":39},"EJACKPOT":{"numbersLimit":50, "additionalLimit":10} }
 COMMON_STATS = []
 PRIMARY_STATS = []
 ADDITIONAL_STATS = []
@@ -31,6 +31,7 @@ def setup():
     for i in range(0,GAMES[GAME]["numbersLimit"]):
         COMMON_STATS.append(0);
         PRIMARY_STATS.append(0);
+    for i in range(0, GAMES[GAME]["additionalLimit"]):
         ADDITIONAL_STATS.append(0);
 
 def process_results():
@@ -64,7 +65,11 @@ def process_results():
                             ADDITIONAL_STATS[int(rsec)-1] += 1
                 tmpAvg = 0
                 for tmpIdx in range(0,GAMES[GAME]["numbersLimit"]):
-                    tmpAvg += COMMON_STATS[tmpIdx]
+                    if GAME == "LOTTO":
+                        tmpAvg += COMMON_STATS[tmpIdx]
+                    elif GAME == "EJACKPOT":
+                        tmpAvg += PRIMARY_STATS[tmpIdx]
+            
                 AVERAGE_STATS = tmpAvg / GAMES[GAME]["numbersLimit"]
                 if os.path.exists(plot_p_filename) or os.path.exists(plot_p_filename) or\
                    os.path.exists(plot_p_filename or os.path.exists(plot_avg_filename)):
@@ -83,9 +88,10 @@ def save_to_file(prim, addit, comm, avg):
         avgf = open(avg, 'w')
         for num in range(1, GAMES[GAME]["numbersLimit"] + 1):
             pf.write(str(num) + "\t" + str(PRIMARY_STATS[num-1]) + "\n")
-            af.write(str(num) + "\t" + str(ADDITIONAL_STATS[num-1]) + "\n")
+            if num <= GAMES[GAME]["additionalLimit"]:
+                af.write(str(num) + "\t" + str(ADDITIONAL_STATS[num-1]) + "\n")
             cf.write(str(num) + "\t" + str(COMMON_STATS[num-1]) + "\n")
-        avgf.write("1\t" + str(AVERAGE_STATS) + "\n39\t" + str(AVERAGE_STATS))
+        avgf.write("1\t" + str(AVERAGE_STATS) + "\n" + str(GAMES[GAME]["numbersLimit"]) + "\t" + str(AVERAGE_STATS))
         pf.flush()
         af.flush()
         cf.flush()

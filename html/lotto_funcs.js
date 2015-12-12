@@ -71,8 +71,15 @@ function swapImage(roundNumber) {
     if (roundNumber < results.length) {
         var weekn = parseInt(results[roundNumber].week)+1;
         var yearn = results[roundNumber].year;
+        var newURL = "png/" + game + "_" + yearn + "_" + weekn;
+        if (game == "LOTTO") {
+            newURL = newURL + "_c.png";
+        } else if (game == "EJACKPOT") {
+            newURL = newURL + "_p.png";
+        }
         // 2015_46_c.data.png
-        document.getElementById("gnuplotted").setAttribute("src","png/" + yearn + "_" + weekn + "_c.data.png");
+        console.log("replacing picture with " + newURL);
+        document.getElementById("gnuplotted").setAttribute("src", newURL);
     }
 }
 
@@ -212,6 +219,7 @@ function selectNumber(e) {
 
 
 function checkCombination() {
+    console.log("checking combination");
     combInput = document.getElementById("combInput");
     inputs = combInput.value.split(",");
     if (inputs.length != 7) {

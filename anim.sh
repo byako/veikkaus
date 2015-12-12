@@ -30,7 +30,7 @@ for i in `ls plot/${game}*_c.data | sed 's/plot\///' | sed 's/_c\.data//'`; do
     primTarget="png/${i}_p.png"
     addsTarget="png/${i}_a.png"
     if [ "${game}" == "LOTTO" ]; then
-        gnuplot -e "sourcefn=\"$commonSrc\"; avgfn=\"$avgSrc\"; primfn=\"$primSrc\"; targetfn=\"png/${game}_${i}.png\"" ${game}_plot.gnuplot;
+        gnuplot -e "sourcefn=\"$commonSrc\"; avgfn=\"$avgSrc\"; primfn=\"$primSrc\"; targetfn=\"png/${i}.png\"" ${game}_plot.gnuplot;
     else # EJACKPOT
         gnuplot -e "avgfn=\"$avgSrc\"; primfn=\"$primSrc\"; targetfn=\"$primTarget\"" ${game}_plot_prim.gnuplot;
         gnuplot -e "addsfn=\"$addsSrc\"; targetfn=\"$addsTarget\"" ${game}_plot_adds.gnuplot;
