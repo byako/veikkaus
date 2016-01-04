@@ -88,8 +88,8 @@ def get_draw(params):
     """Fetch draw result from VEIKKAUS_HOST"""
     yearN1 = int(params["year"])
     weekN1 = int(params["week"]) - 1
-    lastWeek = datetime.date(yearN1, 12, 27).isocalendar()[1]
-    if weekN1 >= lastWeek:
+    lastWeek = datetime.date(yearN1, 12, 28).isocalendar()[1]
+    if weekN1 > lastWeek:
         print('Year %d had only %d weeks' % (yearN1, lastWeek))
         return
     elif weekN1 == lastWeek:
@@ -102,7 +102,7 @@ def get_draw(params):
                                                       "%Y %W %w %H %M"))
     weekEnd = "%.0f000" % time.mktime(time.strptime("%d %d 1 0 0" % (yearN2, weekN2),
                                                     "%Y %W %w %H %M"))
-    print("Fetching results for %s / %s" % (params["year"], params["week"]))
+    print("Fetching results for %s / %s : %s / %s" % (params["year"], params["week"], weekStart, weekEnd))
     r = requests.get(VEIKKAUS_HOST + "/api/v1/draw-games/draws?game-names=" + params["game"] + "&status=" +
                      "RESULTS_AVAILABLE&date-from=%s&date-to=%s" % (weekStart, weekEnd),
                      verify=True, headers=VEIKKAUS_HEADERS)
@@ -112,8 +112,8 @@ def get_draw(params):
             for draw in j["draws"]:
                 latest_result = json.loads("{\"year\":1970,\"week\":1,\"numbers\":[],\"adds\":[],\"date\":\"01.01\"}")
                 drawTime = time.localtime(draw["drawTime"] / 1000)
-                latest_result["year"] = time.strftime("%Y",drawTime)
-                latest_result["week"] = time.strftime("%W",drawTime)
+                latest_result["year"] = str(yearN1)
+                latest_result["week"] = str(weekN1)
                 latest_result["date"] = time.strftime("%m.%d",drawTime)
                 for prim in draw["results"][0]["primary"]:
                     latest_result["numbers"].append(int(prim))
