@@ -87,8 +87,8 @@ def parse_arguments(arguments):
 def get_draw(params):
     """Fetch draw result from VEIKKAUS_HOST"""
     yearN1 = int(params["year"])
-    weekN1 = int(params["week"]) - 1
-    lastWeek = datetime.date(yearN1, 12, 28).isocalendar()[1]
+    weekN1 = int(params["week"])
+    lastWeek = datetime.date(yearN1, 12, 28).isocalendar()[1] - 1;
     if weekN1 > lastWeek:
         print('Year %d had only %d weeks' % (yearN1, lastWeek))
         return
@@ -150,7 +150,7 @@ def starter(arguments):
         print("oldest results are from 2009")
     elif int(params["year"]) > datetime.datetime.now().year:
         print("You want results from future? I don't think so.")
-    elif int(params["week"]) < 1 or int(params["week"]) > 53:
+    elif int(params["week"]) < 0 or int(params["week"]) > 53:
         print("Wrong week number")
     elif params["year"] == str(datetime.datetime.now().year) and int(params["week"]) > \
                            datetime.datetime.now().isocalendar()[1]:

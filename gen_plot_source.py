@@ -12,7 +12,7 @@ PRIMARY_STATS = []
 ADDITIONAL_STATS = []
 
 AVERAGE_STATS = 0
-YEARS = [ "2009", "2010", "2011", "2012", "2013", "2014", "2015"]
+YEARS = [ "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016"]
 QUIET = False
 GAME = "unknown"
 
@@ -45,7 +45,7 @@ def process_results():
     counter = 0;
     setup()
     for year in YEARS:
-        for week in range(1, 54):
+        for week in range(0, 54):
             filename = "results/" + GAME + "_" + str(year) + "_" + str(week) + ".json"
             plot_p_filename = "plot/" + GAME + "_" + str(year) + "_" + str(week).zfill(2) + "_p.data"
             plot_a_filename = "plot/" + GAME + "_" + str(year) + "_" + str(week).zfill(2) + "_a.data"
