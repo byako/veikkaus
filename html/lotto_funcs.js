@@ -3,8 +3,8 @@ var coverage = 1; // calculated based on length of "numbersSelected"
 
 var roundsCounter = 0;
 var selectedRound = 0;
-
-var game = "EJACKPOT";
+var histLength = 52;
+var game = "LOTTO";
 var games = {
     "EJACKPOT": {
         "fieldsRows":9,
@@ -46,6 +46,21 @@ var d5 = [ [1,0], [2,0] ];
 // d6: number of times number has appeared by round
 var d6 = [];
 
+function switchGame(gameName) {
+    if (gameName in games) {
+        if (game == gameName) {
+            console.log("Selected current game, skipping all actions");
+            return;
+        }
+        console.log("switching to new game: " + gameName);
+        game = gameName;
+        $("#switchGameButton").html(gameName + "<span class='caret'></span>");
+        loadResults();
+    } else {
+        console.log("game " + gameName + " is not supported");
+    }
+}
+
 function setMinAvgMax() {
     var avg1 = 0;
     var min1 = 1000;
@@ -68,31 +83,44 @@ function setMinAvgMax() {
 }
 
 function swapImage(roundNumber) {
+    console.log("new image is for number: " + roundNumber);
     if (roundNumber < results.length) {
-        var weekn = parseInt(results[roundNumber].week)+1;
+        var weekn = parseInt(results[roundNumber].week);
         var yearn = results[roundNumber].year;
-        var newURL = "png/" + game + "_" + yearn + "_" + weekn;
+        var newURL = "png/" + game + "_" + yearn + "_" + ("0" + weekn).slice(-2);
         if (game == "LOTTO") {
-            newURL = newURL + "_c.png";
+            newURL = newURL + ".png";
         } else if (game == "EJACKPOT") {
             newURL = newURL + "_p.png";
         }
-        // 2015_46_c.data.png
         console.log("replacing picture with " + newURL);
         document.getElementById("gnuplotted").setAttribute("src", newURL);
     }
 }
 
-function processStats() {
+function drawHistory() {
     var table_ = document.getElementById("_oldResultsTable_");
     if (table_) {
+        table_.innerHTML = "";
         table_.onclick = function(e) {
             var target = (e || window.event).target;
             fieldsShowRound(target.roundNumber);
             swapImage(target.roundNumber);
         }
-        for (var i=0; i < roundsCounter; i++) {
-            var row_ = table_.insertRow(i);
+        if (roundsCounter < histLength) {
+            console.log("drawHistory: adjusting history size, it was longer than results list");
+            histLength = roundsCounter;
+            $("#histLengthInput").value = histLength;
+        }
+        var tableRows = 0;
+        console.log("loading " + histLength + " results out of " + roundsCounter + " available");
+        for (var i=(roundsCounter - histLength); i < roundsCounter; i++) {
+            var row_ = table_.insertRow(tableRows);
+            if (row_ == undefined) {
+                console.log("couldn't insert row to table");
+                return;
+            }
+            tableRows++;
             row_.id = "orRow" + i;
             results[i].numbers.sort();
             for (j=1; j<=games[game].numbersLimit; j++) {
@@ -106,10 +134,8 @@ function processStats() {
                         cell_.innerHTML = String(j);
                     }
                 }
-                cell_.width="20px";
-                cell_.height="20px";
+                cell_.className += "tableCell";
                 cell_.roundNumber=i;
-                cell_.style.textAlign="center";
             }
         }
     }
@@ -147,6 +173,7 @@ function addFields() {
     console.log("adding fields setup");
     var table_ = document.getElementById("fieldsTable");
     if (table_) {
+        table_.innerHTML = "";
         var rows_ = Array();
 
         for (var i=0; i<games[game].fieldsRows; i++) {
@@ -255,8 +282,8 @@ function checkCombination() {
 function fieldsShowRound(roundNumber) {
     if (roundNumber > results.length || roundNumber < 0) return;
     // paint back already selected cells to body's bg color
-
-    if (selectedRound >= 0) {
+    console.log("roundNumber: " + roundNumber + ", selectedRound: " + selectedRound);
+    if (selectedRound >= 0 && selectedRound < roundsCounter) {
         for (var i=0; i < results[selectedRound].numbers.length; i++) {
             var cell_ = document.getElementById("cell" + String(results[selectedRound].numbers[i]));
             if (cell_) {
@@ -329,27 +356,34 @@ function fieldsShowStats() {
 function populateOldResultsStats() {
     var table_ = document.getElementById("_oldResultsStatsTable_");
     if (table_) {
+        table_.innerHTML = "";
         table_.onclick = selectNumber;
         var rows_ = Array();
-        for (var i=0; i<4; i++) {
+        for (var i=0; i<2; i++) {
             rows_[i] = table_.insertRow(i);
         }
-        var cell_ = rows_[1].insertCell(0);
-        cell_.height="25px";
+        var cell_;
         for (var i=0; i<games[game].numbersLimit; i++) {
             cell_ = rows_[0].insertCell(i);
-            cell_.id = "oldResultsStatsCell" + String(i+1);
-            cell_.style.textAlign="center";
-            cell_.innerHTML=String(i+1);
-            cell_.selected = false;
-
-            cell_ = rows_[2].insertCell(i);
-            cell_.style.textAlign="center";
+            cell_.className += "tableCell";
             cell_.innerHTML=String(d1[i][1]);
 
-            cell_ = rows_[3].insertCell(i);
-            cell_.style.textAlign="center";
+            cell_ = rows_[1].insertCell(i);
+            cell_.className += "tableCell";
             cell_.innerHTML=String(d2[i][1]);
+        }
+    }
+    var tableLegend_ = document.getElementById("_oldResultsLegendTable_");
+    if (tableLegend_) {
+        tableLegend_.innerHTML = "";
+        var row = tableLegend_.insertRow(0);
+        var cell_;
+        for (var i=0; i<games[game].numbersLimit; i++) {
+            cell_ = row.insertCell(i);
+            cell_.className += "tableCell";
+            cell_.id = "oldResultsStatsCell" + String(i+1);
+            cell_.innerHTML=String(i+1);
+            cell_.selected = false;
         }
     }
     document.getElementById("avgDiv").innerHTML = '' + d3[0][1].toFixed(0);
@@ -434,3 +468,43 @@ function showFields(element) {
     }
 }
 
+function updateHistSize() {
+    var tempHistLength = $("#histLengthInput").val();
+    console.log("checking new history size value:" + tempHistLength);
+    if (tempHistLength >= results.length) {
+        console.log("entered history value is too high");
+        $("#histLengthInput").val(30);
+        tempHistLength = 30;
+    }
+    if (tempHistLength < 0) {
+        console.log("entered history value is less than zero");
+        $("#histLengthInput").val(30);
+        tempHistLength = 30;
+    }
+    histLength = tempHistLength;
+    drawHistory();
+}
+
+function processResults() {
+    roundsCounter = results.length - 1;
+    for (var i=0; i < roundsCounter; i++) {
+        // add main appearances
+        for (var j=0; j < results[i].numbers.length; j++) {
+            var main = results[i].numbers[j];
+            d1[main-1][1] = d1[main-1][1] + 1;
+        }
+        for (var j=0; j < results[i].adds.length; j++) {
+            var addit = results[i].adds[j];
+            d1[addit-1][1] = d1[addit-1][1] + 1;
+            d2[addit-1][1] = d2[addit-1][1] + 1;
+        }
+        d6.push(d1.slice(0));
+    }
+    selectedRound=roundsCounter;
+    drawHistory();
+    setMinAvgMax();
+    addFields();
+    fieldsShowRound(roundsCounter - 1);
+    populateOldResultsStats();
+    swapImage(roundsCounter-1);
+}

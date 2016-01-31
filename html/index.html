@@ -1,72 +1,74 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8" http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Lotto results stats and processing tool from Byako</title>
-    <script language="javascript" type="text/javascript" src="jquery.min.js"></script>
-    <script language="javascript" type="text/javascript" src="jquery.flot.js"></script>
-    <script language="javascript" type="text/javascript" src="lotto_funcs.js"></script>
-    <script language="javascript" type="text/javascript" src="lotto_ready.js"></script>
+    <script src="jquery.min.js"></script>
+    <script src="lotto_funcs.js"></script>
+    <script src="lotto_ready.js"></script>
+    <script src="bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
     <link href="lotto-style.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="bootstrap-3.3.6-dist/css/bootstrap.min.css">
 </head>
 <body>
-    <div id="config_">
-        <span>
-            <div style="display:inline;">
-                <input type="checkbox" name="showLog" value="true" checked onchange="showLog(this);" />
-                <label for="showLog">Show Log</label>
-                <button id="logPlus" type="button" onclick="increaseHeight('_oldResultsDiv_')">+</button>
-                <button id="logMinus" type="button" onclick="decreaseHeight('_oldResultsDiv_')">-</button>
+    <div class="container-fluid">
+        <div class="row" style="background-color:#bbb;">
+            <div class="col-md-3">
+                <div class="dropdown">
+                    <button id="switchGameButton" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">LOTTO
+                    <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:switchGame('LOTTO');">LOTTO</a></li>
+                        <li><a href="javascript:switchGame('EJACKPOT');">EJACKPOT</a></li>
+                        <li class="disabled"><a href="#">JOKERI</a></li>
+                    </ul>
+                </div>
             </div>
-            <div style="display:inline;">
-                <input type="checkbox" name="showStatsGraph" value="true" onchange="showStatsGraph(this);" />
-                <label for="showStatsGraph">Show log statistics graph</label>
-                <button id="statsGraphPlus" type="button" onclick="increaseHeight('_logs_')" disabled>+</button>
-                <button id="statsGraphMinus" type="button" onclick="decreaseHeight('_logs_')" disabled>-</button>
-            </div>
-            <div style="display:inline;">
+            <div class="col-md-3">
                 <input type="checkbox" name="showFields" value="true" checked onchange="showFields(this);" />
                 <label for="showFields">Show fields</label>
-                <button id="fieldsPlus" type="button" onclick="increaseHeight('_fields_')">+</button>
-                <button id="fieldsMinus" type="button" onclick="decreaseHeight('_fields_')">-</button>
             </div>
-            <div style="display:inline-block;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;" id="checkDiv">
+            <div class="col-md-3" id="historyLengthDiv">
+                <span>Shown last results
+                    <input type="number" id="histLengthInput" style="width:50px" value="52" onchange="updateHistSize()"/>
+                </span>
+            </div>
+            <div class="col-md-3" id="checkDiv">
                 <input type="text" name="combcheck" id="combInput" value="" />
-                <button id="combCheckButton" type="button" onclick="checkCombination();">Check</button>
-            </div>
-        </span>
-    </div>
-    <div><!-- middle-container -->
-        <div style="display:inline-block;"><!-- horizontal wrapper -->
-        <img id="gnuplotted" src="png/latest_EJACKPOT.png" />
-
-            <div id="_oldResults_"> <!-- main container for dynamic log -->
-                <div id="_oldResultsDiv_" style="height:600px;overflow:auto;"> <!-- scrollable results table -->
-                    <table id="_oldResultsTable_" tabindex"1">
-                    </table><br>
-                </div>
-                <div id="_oldResultsStatsDiv_" style=""> <!-- non-scrollable bottom stats and selection table -->
-                    <table id="_oldResultsStatsTable_" >
-                    </table>
-                </div>
-                <span>
-                    <div style="display:inline;">Max:</div><div id="maxDiv" style="display:inline;">a</div>
-                    <div style="display:inline;">Avg:</div><div id="avgDiv" style="display:inline;">a</div>
-                    <div style="display:inline;">Min:</div><div id="minDiv" style="display:inline;">a</div>
-                    <div style="display:inline;">Coverage:&nbsp</div><div id="coverageDiv" style="display:inline;">1</div>
-                </span>
-            </div>
-            <div id="_logs_" style="width:1000px;height:200px;display:none;" visibility="hidden"></div>
-
-            <div id="roundNav" style="width:1000px;height:200px;border:1px solid #000000;display:none;" visibility="hidden">
-                <span id="roundNavSpan">
-                </span>
+                <button id="combCheckButton" class="btn btn-default btn-sm" type="button" onclick="checkCombination();">Check</button>
             </div>
         </div>
-        <div style="display:inline-block;">
-            <div id="_fields_">
-                <table id="fieldsTable" width="auto" border="0">
-                </table>
+        <div id="mid-cont"><!-- middle-container -->
+            <div style="display:inline-block;"><!-- horizontal wrapper -->
+            <img id="gnuplotted" src="png/latest_LOTTO.png" />
+
+                <div id="_oldResults_"> <!-- main container for dynamic log -->
+                        <table class="mtable" style="width:100%;" id="_oldResultsTable_" tabindex"1">
+                        </table>
+                        <table class="mtable" style="width:100%;" id="_oldResultsLegendTable_" >
+                        </table><br>
+                        <table class="mtable" style="width:100%;" id="_oldResultsStatsTable_" >
+                        </table>
+                    <span>
+                        <div style="display:inline;">Max:</div><div id="maxDiv" style="display:inline;">a</div>
+                        <div style="display:inline;">Avg:</div><div id="avgDiv" style="display:inline;">a</div>
+                        <div style="display:inline;">Min:</div><div id="minDiv" style="display:inline;">a</div>
+                        <div style="display:inline;">Coverage:&nbsp</div><div id="coverageDiv" style="display:inline;">1</div>
+                    </span>
+                </div>
+                <div id="_logs_" style="width:1000px;height:200px;display:none;" visibility="hidden"></div>
+
+                <div id="roundNav" style="width:1000px;height:200px;border:1px solid #000000;display:none;" visibility="hidden">
+                    <span id="roundNavSpan">
+                    </span>
+                </div>
+            </div>
+            <div style="display:inline-block;">
+                <div id="_fields_">
+                    <table id="fieldsTable" width="auto" border="0">
+                    </table>
+                </div>
             </div>
         </div>
     </div>

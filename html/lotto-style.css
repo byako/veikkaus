@@ -5,11 +5,18 @@ a, a:hover, a:visited, a:active {
 	color:#EEEEEE;
 }
 body {
-#	background-color:#405080;
 	background-color:#304050;
 	color:#CFCFCF;
 }
 
+#mid-cont
+{
+    background-color: #999;
+}
+#config_
+{
+    background-color: #bbb;
+}
 div.nav
 {
 	float:left;
@@ -37,4 +44,11 @@ div.navBar:hover
 div.nav:hover
 {
 	background-color: #8080AA;
+}
+
+.tableCell {
+    width:20px;
+    height:20px;
+    text-align:center;
+
 }

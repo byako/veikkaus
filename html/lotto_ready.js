@@ -1,13 +1,12 @@
 function loadResults()
 {
     var xmlhttp;
-    var resCounter = [];
-    var resAddCounter = [];
 
-    if (game != "EJACKPOT" && game != "LOTTO") {
+    if (! game in games) {
+        console.log("loadResults: game is not supported: " + game);
         return;
     }
-
+    console.log("fetching results for game " + game);
     // initialize d1 & d2
     for (var i=1; i <= games[game].numbersLimit; i++) {
         d1.push(new Array(i,0));
@@ -19,32 +18,16 @@ function loadResults()
     } else {
         xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
     }
-    roundsCounter = 0;
     xmlhttp.onreadystatechange=function() {
         if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-            results= JSON.parse("[" + xmlhttp.responseText + "{}]");
-            if (results == undefined) {
+            var parseResult = JSON.parse("[" + xmlhttp.responseText + "{}]");
+            if (parseResult == undefined) {
+                console.log("Could not parse results data received from server");
                 return;
             }
-            roundsCounter = results.length - 1;
-            for (var i=0; i < roundsCounter; i++) {
-                // add main appearances
-                for (var j=0; j < results[i].numbers.length; j++) {
-                    var main = results[i].numbers[j];
-                    d1[main-1][1] = d1[main-1][1] + 1;
-                }
-                for (var j=0; j < results[i].adds.length; j++) {
-                    var addit = results[i].adds[j];
-                    d1[addit-1][1] = d1[addit-1][1] + 1;
-                    d2[addit-1][1] = d2[addit-1][1] + 1;
-                }
-                d6.push(d1.slice(0));
-            }
-            processStats();
-            setMinAvgMax();
-            addFields();
-            fieldsShowRound(roundsCounter - 1);
-            populateOldResultsStats();
+            results = parseResult;
+            console.log("Got " + results.length + " results for " + game + ", parting...");
+            processResults();
         }
     }
 
@@ -52,6 +35,7 @@ function loadResults()
     xmlhttp.send();
 }
 
+
 $(document).ready(function() {
-    loadResults();
+   loadResults();
 });
