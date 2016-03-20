@@ -41,12 +41,14 @@ done;
 
 if [ "x$recreate" == "x1" ]; then
     [ -f $output_file ] && rm $output_file
-    echo "creating new animated gif: $output_file"
     if [ "${game}" == "LOTTO" ]; then
-        convert -delay 20 png/${game}*png $output_file
+        echo "creating new animated gif: $output_file"
+        convert -delay 5 png/${game}*png $output_file
     else # EJACKPOT
-        convert -delay 20 png/${game}*_p.png $output_file
-        convert -delay 20 png/${game}*_a.png $output_file2
+        echo "creating new animated gif: $output_file"
+        convert -delay 5 png/${game}*_p.png $output_file
+        echo "creating new animated gif: $output_file2"
+        convert -delay 5 png/${game}*_a.png $output_file2
     fi
 fi
 
