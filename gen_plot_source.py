@@ -6,7 +6,7 @@ import json
 import getopt
 import os.path
 
-GAMES = {"LOTTO":{"numbersLimit":39, "additionalLimit":39},"EJACKPOT":{"numbersLimit":50, "additionalLimit":10} }
+GAMES = {"LOTTO":{"numbersLimit":40, "additionalLimit":40},"EJACKPOT":{"numbersLimit":50, "additionalLimit":10} }
 COMMON_STATS = []
 PRIMARY_STATS = []
 ADDITIONAL_STATS = []

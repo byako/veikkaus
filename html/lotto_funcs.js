@@ -15,6 +15,7 @@ var games = {
         "numbersLimit":50,
         "additionalNumbersStart":1,
         "additionalNumbersLimit":10,
+        "combinationLength":7
     },
     "LOTTO": {
         "fieldsRows":6,
@@ -22,12 +23,20 @@ var games = {
         "drawNumbers":5,
         "drawAdditional":2,
         "numbersStart":1,
-        "numbersLimit":39,
+        "numbersLimit":40,
         "additionalNumbersStart":1,
-        "additionalNumbersLimit":39,
+        "additionalNumbersLimit":40,
+        "combinationLength":7
     }
 }
-
+var gameStats = {
+    "jackpotted":0,
+    "moneyWonOverall":0,
+    "moneyWonJackpotted":0,
+    "repeatedCombinations":0,
+    "jackpottedPerYear":{},
+    "jackpottedPerMonth":{}
+};
 var results = [];
 
 var logsList = [];
@@ -125,16 +134,15 @@ function drawHistory() {
             results[i].numbers.sort();
             for (j=1; j<=games[game].numbersLimit; j++) {
                 var cell_ = row_.insertCell(j-1);
-                if (results[i].numbers.indexOf(j) >= 0) {// || results[i].adds.indexOf(j) >= 0) {
-                    cell_.innerHTML=String(j);
+                if (results[i].numbers.indexOf(j) >= 0) {
+                    cell_.className += "tableCellStandard";
+                    cell_.innerHTML = String(j);
+                } else if (results[i].adds.indexOf(j) >= 0) {
+                    cell_.className += "tableCellAdditional";
+                    cell_.innerHTML = String(j);
+                } else {
+                    cell_.className += "tableCell";
                 }
-                if (results[i].adds.indexOf(j) >= 0) {
-                    cell_.style.background="#383";
-                    if (game == "LOTTO") {
-                        cell_.innerHTML = String(j);
-                    }
-                }
-                cell_.className += "tableCell";
                 cell_.roundNumber=i;
             }
         }
@@ -249,21 +257,24 @@ function checkCombination() {
     console.log("checking combination");
     combInput = document.getElementById("combInput");
     inputs = combInput.value.split(",");
-    if (inputs.length != 7) {
-        alert("Incorrect format. Please, enter 7 numbers separated by comma.");
-        document.getElementById("checkDiv").style.backgroundColor="#AA1010";
-        return;
+    if (inputs.length != games[game].combinationLength) {
+        inputs = combInput.value.split(" ");
+        if (inputs.length != games[game].combinationLength) {
+            alert("Incorrect format. Please, enter " + games[game].combinationLength + " numbers separated by comma or space");
+            document.getElementById("checkDiv").style.backgroundColor="#AA1010";
+            return;
+        }
     }
     for (var i=0;i<7;i++) {
         el = parseInt(inputs[i]);
-        if (el < 0 || el > 39) {
-            alert("Incorrect format. Please, enter 7 numbers separated by comma.");
+        if (el < games[game].numbersStart || el > games[game].numbersLimit) {
+            alert("Incorrect format. Please, enter " + games[game].combinationLength + " numbers separated by comma or space");
             document.getElementById("checkDiv").style.backgroundColor="#AA1010";
             return;
         }
     }
     document.getElementById('checkDiv').style.backgroundColor = document.getElementsByTagName('body')[0].style.backgroundColor;
-    for (var i=0; i<results.length; i++) {
+    for (var i=0; i<results.length-1; i++) {
         res=1;
         for (var j=0;j<7;j++){
             if (results[i].numbers.indexOf(inputs[j]) < 0 && results[i].adds.indexOf(inputs[i]) < 0) {
@@ -280,12 +291,19 @@ function checkCombination() {
 }
 
 function fieldsShowRound(roundNumber) {
-    if (roundNumber > results.length || roundNumber < 0) return;
+    if (roundNumber > results.length || roundNumber < 0 || roundNumber == selectedRound) return;
     // paint back already selected cells to body's bg color
     console.log("roundNumber: " + roundNumber + ", selectedRound: " + selectedRound);
     if (selectedRound >= 0 && selectedRound < roundsCounter) {
         for (var i=0; i < results[selectedRound].numbers.length; i++) {
             var cell_ = document.getElementById("cell" + String(results[selectedRound].numbers[i]));
+            if (cell_) {
+                cell_.style.backgroundColor=document.getElementsByTagName('body')[0].style.backgroundColor;
+                cell_.style.color=document.getElementsByTagName('body')[0].style.color;
+            }
+        }
+        for (var i=0; i < results[selectedRound].adds.length; i++) {
+            var cell_ = document.getElementById("cell" + String(results[selectedRound].adds[i]));
             if (cell_) {
                 cell_.style.backgroundColor=document.getElementsByTagName('body')[0].style.backgroundColor;
                 cell_.style.color=document.getElementsByTagName('body')[0].style.color;
@@ -331,7 +349,7 @@ function fieldsShowRound(roundNumber) {
         tr_.style.backgroundColor = "#fff";
         tr_.style.color = "#000";
     }
-    selectedRound=roundNumber;
+    selectedRound = roundNumber;
 } 
 
 function fieldsShowStats() {
