@@ -4,22 +4,27 @@ from __future__ import print_function
 import sys
 import json
 import time
+import glob
 import datetime
 import getopt
 import os.path
+import subprocess
 
 def print_usage():
     """Print usage manual"""
     print("\n Usage: ")
+    print('[-r|--regenerate] re-generate latest_$GAME.json file from results/*json')
     print("-h prints this help")
+    print('-g <game>')
     print("-w <week number[1..53]>")
     print("-y <year number[2010..$CurYear]>")
     sys.exit(0)
 
 def parse_arguments(arguments):
     """Get week number and year out of arguments"""
-    optlist, args = getopt.getopt(arguments, 'ha:w:y:g:')
+    optlist, args = getopt.getopt(arguments, 'ha:w:y:g:r')
     params = {
+        "regenerate":False,
         "year":"1970",
         "week":"54",
         "game":"unknown"
@@ -31,6 +36,8 @@ def parse_arguments(arguments):
             params["year"] = a
         elif o == '-w':
             params["week"] = a
+        elif o == '-r':
+            params["regenerate"] = True
         elif o == '-g':
             if a == "lotto":
                 params["game"] = "LOTTO"
@@ -105,29 +112,60 @@ def print_draw(params):
                     print('')
         except:
             print("parsing of JSON round description failed")
+            return -1
     else:
         print("could not read from file properly: " + responseText)
+        return -2
+
+    return 0
+
+def regenerate(params):
+    """read through results/ folder and generate new latest_$GAME file """
+    files = subprocess.check_output("ls results/", stderr=subprocess.STDOUT, shell=False);
+    print("debug: output: %s" % files)
+    print("re-generating latest_%s.json" % params["game"])
+    print("got %d files" % len(files))
+    for filename in files:
+        print(filename)
+    return 0
 
 def starter(arguments):
     """Validate arguments and process results"""
+    do_print_usage = False
+    RC = 0
+
     params = parse_arguments(arguments)
-    if params["week"] == "54" or params["year"] == "1970":
-        print_usage()
-    elif int(params["year"]) < 2009:
-        print("oldest results are from 2009")
-    elif int(params["year"]) > datetime.datetime.now().year:
-        print("You want results from future? I don't think so.")
-    elif int(params["week"]) < 0 or int(params["week"]) > 53:
-        print("Wrong week number")
-    elif params["year"] == str(datetime.datetime.now().year) and int(params["week"]) > \
-                           datetime.datetime.now().isocalendar()[1]:
-        print("Week number is too big for this year")
-    elif params["game"] != "EJACKPOT" and params["game"] != "LOTTO":
+    if params["regenerate"] == False:
+        if params["week"] == "54" or params["year"] == "1970":
+            do_print_usage = True
+        elif int(params["year"]) < 2009:
+            print("oldest results are from 2009")
+            do_print_usage = True
+        elif int(params["year"]) > datetime.datetime.now().year:
+            print("You want results from future? I don't think so.")
+            do_print_usage = True
+        elif int(params["week"]) < 0 or int(params["week"]) > 53:
+            print("Wrong week number")
+            do_print_usage = True
+        elif params["year"] == str(datetime.datetime.now().year) and int(params["week"]) > \
+                               datetime.datetime.now().isocalendar()[1]:
+            print("Week number is too big for this year")
+            do_print_usage = True
+
+    if params["game"] != "EJACKPOT" and params["game"] != "LOTTO":
         print("Supported games: ejackpot, lotto")
+        do_print_usage = True
+
+    if do_print_usage == True:
+        print_usage()
+        sys.exit(1)
+
+    if params["regenerate"] == True:
+        RC = regenerate(params)
     else:
-        print_draw(params)
-        sys.exit(0)
-    print_usage()
+        RC = print_draw(params)
+
+    sys.exit(RC)
 
 if __name__ == "__main__":
     starter(sys.argv[1:])

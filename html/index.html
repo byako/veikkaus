@@ -7,9 +7,9 @@
     <script src="jquery.min.js"></script>
     <script src="lotto_funcs.js"></script>
     <script src="lotto_ready.js"></script>
-    <script src="bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
+    <script src="bootstrap.min.js"></script>
     <link href="lotto-style.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="bootstrap-3.3.6-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap.min.css">
 </head>
 <body>
     <div class="container-fluid">
@@ -26,7 +26,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <input type="checkbox" name="showFields" value="true" checked onchange="showFields(this);" />
+                <input id="showFieldsCheckbox" type="checkbox" name="showFields" value="true" checked onchange="showFieldsChanged(this);" />
                 <label for="showFields">Show fields</label>
             </div>
             <div class="col-md-3" id="historyLengthDiv">
@@ -40,14 +40,14 @@
             </div>
         </div>
         <div id="mid-cont"><!-- middle-container -->
-            <div style="display:inline-block;"><!-- horizontal wrapper -->
-            <img id="gnuplotted" src="png/latest_LOTTO.png" />
+            <div style="display:inline-block;color:#fff;"><!-- horizontal wrapper -->
+                <img id="gnuplotted" src="png/latest_LOTTO.png" />
 
                 <div id="_oldResults_"> <!-- main container for dynamic log -->
                         <table class="mtable" style="width:100%;" id="_oldResultsTable_" tabindex"1">
                         </table>
                         <table class="mtable" style="width:100%;" id="_oldResultsLegendTable_" >
-                        </table><br>
+                        </table><br/>
                         <table class="mtable" style="width:100%;" id="_oldResultsStatsTable_" >
                         </table>
                     <span>
@@ -64,10 +64,30 @@
                     </span>
                 </div>
             </div>
-            <div style="display:inline-block;">
-                <div id="_fields_">
-                    <table id="fieldsTable" width="auto" border="0">
-                    </table>
+            <div id="detailedInfo" style="font-size:large; display:inline-block;vertical-align: top;">
+                <div style="display:inline-block;vertical-align: top; background: #aaa;">
+                    <div id="prizes">
+                        <div id="drawDate"></div>
+                        <hr/>
+                        <table id="prizesTable" width="100%" border="0">
+                            <tr>
+                                <th>header1</th>
+                                <th>header2</th>
+                                <th>header3</th>
+                            </tr>
+                                <td>cell1</td>
+                                <td>cell2</td>
+                                <td>cell3</td>
+                            <tr>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div style="display:inline-block;">
+                    <div id="_fields_">
+                        <table id="fieldsTable" width="auto" border="0">
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,8 +1,9 @@
 var numbersSelected = []; // initially empty, holds numbers selected by user
 var coverage = 1; // calculated based on length of "numbersSelected"
-
+var showExtendedResultInfo = true;
 var roundsCounter = 0;
 var selectedRound = 0;
+var showFields = 1;
 var histLength = 52;
 var game = "LOTTO";
 var games = {
@@ -64,6 +65,7 @@ function switchGame(gameName) {
         console.log("switching to new game: " + gameName);
         game = gameName;
         $("#switchGameButton").html(gameName + "<span class='caret'></span>");
+        setCookie("game", game, 365);
         loadResults();
     } else {
         console.log("game " + gameName + " is not supported");
@@ -107,6 +109,7 @@ function swapImage(roundNumber) {
     }
 }
 
+
 function drawHistory() {
     var table_ = document.getElementById("_oldResultsTable_");
     if (table_) {
@@ -115,6 +118,9 @@ function drawHistory() {
             var target = (e || window.event).target;
             fieldsShowRound(target.roundNumber);
             swapImage(target.roundNumber);
+            if (showExtendedResultInfo) {
+               loadExtendedResultInfo(game, results[target.roundNumber].year, results[target.roundNumber].week);
+            }
         }
         if (roundsCounter < histLength) {
             console.log("drawHistory: adjusting history size, it was longer than results list");
@@ -144,6 +150,11 @@ function drawHistory() {
                     cell_.className += "tableCell";
                 }
                 cell_.roundNumber=i;
+            }
+            if ("flags" in results[i]) {
+                if (results[i]["flags"]["jp"] == 1) {
+                    row_.style.backgroundColor = "#f3c22b";
+                }
             }
         }
     }
@@ -199,19 +210,22 @@ function addFields() {
                 cell_.height="20px";
                 cell_.selected = false;
                 cell_.style.textAlign="center";
-                cell_.innerHTML=String(idx);
+                cell_.innerHTML="&nbsp" + String(idx) + "&nbsp";
             }
         }
     }
 }
 
+/*
+ * handles table onclick event
+ */
 function selectNumber(e) {
     var target = (e || window.event).target;
     if (target.tagName in {TD:1, TH:1}) {
         var newNumber = Number(target.innerHTML);
         if (target.selected == false) {
             document.getElementById("cell" + newNumber).selected = true;
-            if (document.getElementById("cell" + newNumber).style.backgroundColor == "#fff" ){
+            if (document.getElementById("cell" + newNumber).style.backgroundColor == "#fff" ) {
                 document.getElementById("cell" + newNumber).style.backgroundColor = "#AAFFAA";
             } else {
                 document.getElementById("cell" + newNumber).style.backgroundColor = "#386";
@@ -227,7 +241,7 @@ function selectNumber(e) {
             }*/
         } else {
             document.getElementById("cell" + newNumber).selected = false;
-            if (document.getElementById("cell" + newNumber).style.backgroundColor == "#AAFFAA" ){
+            if (document.getElementById("cell" + newNumber).style.backgroundColor == "#AAFFAA" ) {
                 document.getElementById("cell" + newNumber).style.backgroundColor = "#fff";
             } else {
                 document.getElementById("cell" + newNumber).style.backgroundColor =  document.getElementsByTagName('body')[0].style.backgroundColor;
@@ -276,7 +290,7 @@ function checkCombination() {
     document.getElementById('checkDiv').style.backgroundColor = document.getElementsByTagName('body')[0].style.backgroundColor;
     for (var i=0; i<results.length-1; i++) {
         res=1;
-        for (var j=0;j<7;j++){
+        for (var j=0;j<7;j++) {
             if (results[i].numbers.indexOf(inputs[j]) < 0 && results[i].adds.indexOf(inputs[i]) < 0) {
                 res = 0;
                 break;
@@ -290,6 +304,9 @@ function checkCombination() {
     }
 }
 
+/*
+ * here we handle clicking on the old results : highlighting it, etc.
+ */
 function fieldsShowRound(roundNumber) {
     if (roundNumber > results.length || roundNumber < 0 || roundNumber == selectedRound) return;
     // paint back already selected cells to body's bg color
@@ -310,6 +327,7 @@ function fieldsShowRound(roundNumber) {
             }
         }
 
+        console.log("painting starts");
         var tr_ = document.getElementById("orRow" + selectedRound);
         if (tr_) {
             tr_.style.backgroundColor = document.getElementsByTagName('body')[0].style.backgroundColor;
@@ -330,7 +348,7 @@ function fieldsShowRound(roundNumber) {
             } else {
                 cell_.style.backgroundColor="#fff";
             }
-            cell_.style.color="#000";
+//            cell_.style.color="#000";
         }
     }
     for (var i=0; i < results[roundNumber].adds.length;i++) {
@@ -341,13 +359,13 @@ function fieldsShowRound(roundNumber) {
             } else {
                 cell_.style.backgroundColor="#f99";
             }
-            cell_.style.color="#000";
+//            cell_.style.color="#000";
         }
     }
     tr_ = document.getElementById("orRow" + roundNumber);
     if (tr_) {
         tr_.style.backgroundColor = "#fff";
-        tr_.style.color = "#000";
+//        tr_.style.color = "#000";
     }
     selectedRound = roundNumber;
 } 
@@ -469,11 +487,20 @@ function showStats(element) {
     }
 }
         
-function showFields(element) {
+function showFieldsChanged(element) {
+    if (!element.checked) {
+        showFields = 0;
+    } else {
+        showFields = 1;
+    }
+    renderFields();
+}
+
+function renderFields() {
     var div_ = document.getElementById("fieldsTable");
     var plus_ = document.getElementById("fieldsPlus");
     var minus_ = document.getElementById("fieldsMinus");
-    if (!element.checked) {
+    if (!showFields) {
         div_.style.visibility = "hidden";
         div_.style.display = "none";
         plus_.disabled = true;
@@ -500,6 +527,7 @@ function updateHistSize() {
         tempHistLength = 30;
     }
     histLength = tempHistLength;
+    setCookie("histLength", histLength, 365);
     drawHistory();
 }
 
@@ -525,4 +553,84 @@ function processResults() {
     fieldsShowRound(roundsCounter - 1);
     populateOldResultsStats();
     swapImage(roundsCounter-1);
+}
+
+function loadExtendedResultInfo(pgame, pyear, pweek_number) {
+    var xmlhttp;
+    if (window.XMLHttpRequest) {
+        xmlhttp=new XMLHttpRequest();
+    } else {
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function() {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+            var parseResult = JSON.parse(xmlhttp.responseText);
+            if (parseResult == undefined) {
+                console.log("Could not parse results data received from server");
+                return;
+            }
+            processExtendedResultInfo(parseResult);
+        }
+    }
+
+    xmlhttp.open("GET","results/" + pgame + "_" + pyear + "_" + pweek_number + ".json", true);
+    xmlhttp.send();
+}
+
+function processExtendedResultInfo(presult) {
+    console.log("processing extended result");
+    for (var i=0; i<presult["draws"].length; i++) {
+        var draw = presult["draws"][i];
+        var drawDateDiv = document.getElementById("drawDate");
+        if (drawDateDiv) {
+            var drawtime = new Date(parseInt(draw["drawTime"]));
+            drawDateDiv.innerHTML = "" + drawtime;
+        }
+        for (var prim in draw["results"][0]["primary"]) {
+
+        }
+        for (var addit in draw["results"][0]["secondary"]) {
+
+        }
+
+        /* render table with payable prizes */
+        var prizes = document.getElementById("prizesTable");
+        if (!prizes) {
+            console.log("ERROR: could not find prizesTable, will create");
+            document.createElement("table");
+        } else {
+            prizes.innerHTML = "";
+        }
+        var header = prizes.insertRow(0);
+        var headerCell = header.insertCell(0);
+        headerCell.style.textAlign="center";
+        headerCell.innerHTML = "Lucky ones";
+
+        headerCell = header.insertCell(1);
+        headerCell.style.textAlign="center";
+        headerCell.innerHTML = "Prize";
+
+        headerCell = header.insertCell(2);
+        headerCell.style.textAlign="center";
+        headerCell.innerHTML = "Combination";
+
+        for (var i=0; i<draw["prizeTiers"].length; i++) {
+            var prize = draw["prizeTiers"][i];
+            var prizeRow = prizes.insertRow(1 + i);
+            var prizeCell = prizeRow.insertCell(0);
+            prizeCell.innerHTML = prize["shareCount"];
+            if (i%2 == 1) {
+                prizeRow.style.backgroundColor = "#888";
+            }
+            prizeCell = prizeRow.insertCell(1);
+            var splitMe = String(prize["shareAmount"]);
+            if (splitMe.length > 2) {
+                splitMe = [splitMe.slice(0,splitMe.length-2),".",splitMe.slice(splitMe.length-2)].join("");
+            }
+            prizeCell.innerHTML =  "&nbsp" + splitMe  + "&nbsp";
+
+            prizeCell = prizeRow.insertCell(2);
+            prizeCell.innerHTML = "&nbsp&nbsp" + prize["name"];
+        }
+    }
 }

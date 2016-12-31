@@ -5,8 +5,11 @@ a, a:hover, a:visited, a:active {
 	color:#EEEEEE;
 }
 body {
-	background-color:#304050;
-	color:#CFCFCF;
+}
+
+.monospace
+{
+  font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
 }
 
 #mid-cont
@@ -50,5 +53,25 @@ div.nav:hover
     width:20px;
     height:20px;
     text-align:center;
-
+}
+.tableCellStandard {
+    width:20px;
+    height:20px;
+    text-align:center;
+    background-color: #66A;
+}
+.tableCellAdditional {
+    width:20px;
+    height:20px;
+    text-align:center;
+    background-color: #383;
+}
+.tableCell:hover {
+    background-color: #777;
+}
+.tableCellStandard:hover {
+    background-color: #88C;
+}
+.tableCellAdditional:hover {
+    background-color: #5A5;
 }
