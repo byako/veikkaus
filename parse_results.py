@@ -121,9 +121,9 @@ def print_draw(params):
 
 def regenerate(params):
     """read through results/ folder and generate new latest_$GAME file """
-    files = subprocess.check_output("ls results/", stderr=subprocess.STDOUT, shell=False);
-    print("debug: output: %s" % files)
+    files = subprocess.check_output("ls -l", stderr=subprocess.STDOUT, shell=False);
     print("re-generating latest_%s.json" % params["game"])
+    files = files.split("\n")
     print("got %d files" % len(files))
     for filename in files:
         print(filename)

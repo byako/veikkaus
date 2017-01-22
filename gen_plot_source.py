@@ -12,7 +12,7 @@ PRIMARY_STATS = []
 ADDITIONAL_STATS = []
 
 AVERAGE_STATS = 0
-YEARS = [ "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016"]
+YEARS = [ "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017"]
 QUIET = False
 GAME = "unknown"
 
