@@ -82,4 +82,15 @@ function loadCookies() {
 $(document).ready(function() {
     loadCookies();
     loadResults();
+    window.addEventListener("keydown", function(e) {
+        // space and arrow keys
+        if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+            if (e.keyCode == 38) {
+                prevResultShow();
+            } else if (e.keyCode == 40) {
+                nextResultShow();
+            }
+            e.preventDefault();
+        }
+    }, false);
 });

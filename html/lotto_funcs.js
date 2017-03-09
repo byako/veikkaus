@@ -116,11 +116,7 @@ function drawHistory() {
         table_.innerHTML = "";
         table_.onclick = function(e) {
             var target = (e || window.event).target;
-            fieldsShowRound(target.roundNumber);
-            swapImage(target.roundNumber);
-            if (showExtendedResultInfo) {
-               loadExtendedResultInfo(game, results[target.roundNumber].year, results[target.roundNumber].week);
-            }
+            rerender(target.roundNumber);
         }
         if (roundsCounter < histLength) {
             console.log("drawHistory: adjusting history size, it was longer than results list");
@@ -550,9 +546,8 @@ function processResults() {
     drawHistory();
     setMinAvgMax();
     addFields();
-    fieldsShowRound(roundsCounter - 1);
     populateOldResultsStats();
-    swapImage(roundsCounter-1);
+    rerender(selectedRound-1);
 }
 
 function loadExtendedResultInfo(pgame, pyear, pweek_number) {
@@ -634,3 +629,24 @@ function processExtendedResultInfo(presult) {
         }
     }
 }
+
+function rerender(newRound) {
+    fieldsShowRound(newRound);
+    swapImage(selectedRound);
+    if (showExtendedResultInfo) {
+       loadExtendedResultInfo(game, results[selectedRound].year, results[selectedRound].week);
+    }
+}
+
+function prevResultShow() {
+    if (selectedRound > (roundsCounter - histLength)) {
+        rerender(selectedRound-1);
+    }
+}
+
+function nextResultShow() {
+    if (selectedRound < roundsCounter-1) {
+        rerender(selectedRound+1);
+    }
+}
+
