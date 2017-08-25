@@ -10,8 +10,8 @@ var games = {
     "EJACKPOT": {
         "fieldsRows":9,
         "fieldsColumns":6,
-        "drawNumbersLimit":5,
-        "additionalLimit":2,
+        "numbers":5,
+        "additionalNumbers":2,
         "numbersStart":1,
         "numbersLimit":50,
         "additionalNumbersStart":1,
@@ -21,8 +21,8 @@ var games = {
     "LOTTO": {
         "fieldsRows":6,
         "fieldsColumns":7,
-        "drawNumbers":5,
-        "drawAdditional":2,
+        "numbers":5,
+        "additionalNumbers":2,
         "numbersStart":1,
         "numbersLimit":40,
         "additionalNumbersStart":1,
@@ -220,6 +220,7 @@ function selectNumber(e) {
     if (target.tagName in {TD:1, TH:1}) {
         var newNumber = Number(target.innerHTML);
         if (target.selected == false) {
+            console.log("selcting number");
             document.getElementById("cell" + newNumber).selected = true;
             if (document.getElementById("cell" + newNumber).style.backgroundColor == "#fff" ) {
                 document.getElementById("cell" + newNumber).style.backgroundColor = "#AAFFAA";
@@ -229,13 +230,8 @@ function selectNumber(e) {
             target.selected = true;
             target.setAttribute('style', 'background-color: #386');
             numbersSelected.push(newNumber);
-/*            var newLength = numbersSelected.length;
-            if (newLength >= numbersLimit) {
-                coverage = coverage * newLength / (newLength - numbersLimit);
-            } else {
-                coverage = 1;
-            }*/
         } else {
+            console.log("unselcting number");
             document.getElementById("cell" + newNumber).selected = false;
             if (document.getElementById("cell" + newNumber).style.backgroundColor == "#AAFFAA" ) {
                 document.getElementById("cell" + newNumber).style.backgroundColor = "#fff";
@@ -246,12 +242,11 @@ function selectNumber(e) {
             target.style.backgroundColor = document.getElementsByTagName('body')[0].style.backgroundColor;
             var i = numbersSelected.indexOf(newNumber);
             numbersSelected.splice(i,1);
-/*            var newLength = numbersSelected.length;
-            if (newLength > 7) {
-                coverage = coverage * (newLength - 6) /( newLength + 1);
-            } else {
-                coverage = 1;
-            }*/
+        }
+        if (numbersSelected.length >= numbersLimit) {
+            coverage = coverage * newLength / (newLength - numbersLimit);
+        } else {
+            coverage = 1;
         }
         document.getElementById("coverageDiv").innerHTML = coverage;
         if (numbersSelected.length == 7) {
@@ -265,8 +260,9 @@ function selectNumber(e) {
 
 function checkCombination() {
     console.log("checking combination");
-    combInput = document.getElementById("combInput");
-    inputs = combInput.value.split(",");
+    /* get entered numbers */
+    var combInput = document.getElementById("combInput");
+    var inputs = combInput.value.split(",");
     if (inputs.length != games[game].combinationLength) {
         inputs = combInput.value.split(" ");
         if (inputs.length != games[game].combinationLength) {
@@ -275,26 +271,30 @@ function checkCombination() {
             return;
         }
     }
+
+    /* verify entered numbers */
     for (var i=0;i<7;i++) {
-        el = parseInt(inputs[i]);
+        var el = parseInt(inputs[i]);
         if (el < games[game].numbersStart || el > games[game].numbersLimit) {
             alert("Incorrect format. Please, enter " + games[game].combinationLength + " numbers separated by comma or space");
             document.getElementById("checkDiv").style.backgroundColor="#AA1010";
             return;
         }
+        inputs[i] = el;
     }
+
     document.getElementById('checkDiv').style.backgroundColor = document.getElementsByTagName('body')[0].style.backgroundColor;
     for (var i=0; i<results.length-1; i++) {
-        res=1;
+        var res=1;
         for (var j=0;j<7;j++) {
-            if (results[i].numbers.indexOf(inputs[j]) < 0 && results[i].adds.indexOf(inputs[i]) < 0) {
+            if (results[i].numbers.indexOf(inputs[j]) < 0 && results[i].adds.indexOf(inputs[j]) < 0) {
                 res = 0;
                 break;
             }
         }
         if (res == 1) { // we found full match
             document.getElementById("checkDiv").style.backgroundColor="#10AA10";
-            fieldsShowRound(i);
+            rerender(i);
             break;
         }
     }
@@ -389,7 +389,6 @@ function populateOldResultsStats() {
     var table_ = document.getElementById("_oldResultsStatsTable_");
     if (table_) {
         table_.innerHTML = "";
-        table_.onclick = selectNumber;
         var rows_ = Array();
         for (var i=0; i<2; i++) {
             rows_[i] = table_.insertRow(i);
@@ -406,6 +405,7 @@ function populateOldResultsStats() {
         }
     }
     var tableLegend_ = document.getElementById("_oldResultsLegendTable_");
+    tableLegend_.onclick = selectNumber;
     if (tableLegend_) {
         tableLegend_.innerHTML = "";
         var row = tableLegend_.insertRow(0);
