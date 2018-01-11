@@ -7,6 +7,12 @@ a, a:hover, a:visited, a:active {
 body {
 }
 
+tbody { display: block; }
+
+tbody {
+    overflow-y: auto;    /* Trigger vertical scroll    */
+}
+
 .monospace
 {
   font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
@@ -50,7 +56,7 @@ div.nav:hover
 }
 
 .tableCell {
-    width:20px;
+    width:25px;
     height:20px;
     text-align:center;
 }

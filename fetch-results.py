@@ -30,7 +30,7 @@ def print_usage():
 
 def append_to_latest(text, params):
     """Append to the end of $LATEST_FILE text string"""
-    LATEST_FILE='latest_'+params["game"]+'.json';
+    LATEST_FILE = 'latest_'+params["game"]+'.json'
     if os.path.exists(LATEST_FILE):
         try:
             print('appending to ' + LATEST_FILE + ' : ' + text)
@@ -88,7 +88,7 @@ def get_draw(params):
     """Fetch draw result from VEIKKAUS_HOST"""
     yearN1 = int(params["year"])
     weekN1 = int(params["week"])
-    lastWeek = datetime.date(yearN1, 12, 28).isocalendar()[1] - 1;
+    lastWeek = datetime.date(yearN1, 12, 28).isocalendar()[1]
     if weekN1 > lastWeek:
         print('Year %d had only %d weeks' % (yearN1, lastWeek))
         return
@@ -98,11 +98,13 @@ def get_draw(params):
     else:
         yearN2 = yearN1
         weekN2 = weekN1 + 1
+    print("DEBUG: lastweek : %s ; year1 : %s ; week1 : %s ; year2 : %s ; week2 : %s" % (lastWeek, yearN1, weekN1, yearN2, weekN2))
     weekStart = "%.0f000" % time.mktime(time.strptime("%d %d 1 0 0" % (yearN1, weekN1),
                                                       "%Y %W %w %H %M"))
     weekEnd = "%.0f000" % time.mktime(time.strptime("%d %d 1 0 0" % (yearN2, weekN2),
                                                     "%Y %W %w %H %M"))
     print("Fetching results for %s / %s : %s / %s" % (params["year"], params["week"], weekStart, weekEnd))
+    print("DEBUG: %s/api/v1/draw-games/draws?game-names=%s&status=RESULTS_AVAILABLE&date-from=%s&date-to=%s" % (VEIKKAUS_HOST, params["game"], weekStart, weekEnd))
     r = requests.get(VEIKKAUS_HOST + "/api/v1/draw-games/draws?game-names=" + params["game"] + "&status=" +
                      "RESULTS_AVAILABLE&date-from=%s&date-to=%s" % (weekStart, weekEnd),
                      verify=True, headers=VEIKKAUS_HEADERS)
@@ -114,7 +116,7 @@ def get_draw(params):
                 drawTime = time.localtime(draw["drawTime"] / 1000)
                 latest_result["year"] = str(yearN1)
                 latest_result["week"] = str(weekN1)
-                latest_result["date"] = time.strftime("%m.%d",drawTime)
+                latest_result["date"] = time.strftime("%m.%d", drawTime)
                 for prim in draw["results"][0]["primary"]:
                     latest_result["numbers"].append(int(prim))
                 for addit in draw["results"][0]["secondary"]:
@@ -134,7 +136,7 @@ def get_draw(params):
                     print('')
             if True == save_to_file('results/' + params["game"] + '_' + params["year"] + '_' + params["week"] +\
                        '.json', r.text):
-                append_to_latest(json.dumps(latest_result,separators=(',',':')), params)
+                append_to_latest(json.dumps(latest_result, separators=(',',':')), params)
         except:
             print("request failed")
     else:
@@ -156,7 +158,7 @@ def starter(arguments):
                            datetime.datetime.now().isocalendar()[1]:
         print("Week number is too big for this year")
     elif params["game"] != "EJACKPOT" and params["game"] != "LOTTO":
-        print("Supported games: ejackpot, lotto");
+        print("Supported games: ejackpot, lotto")
     else:
         get_draw(params)
         sys.exit(0)

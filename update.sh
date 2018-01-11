@@ -22,8 +22,8 @@ if [ "$LAST_WEEK" -lt "$WEEKN" ]; then # fetch new result
     # update pictures
     echo "./gen_plot_source.py -g ejackpot -q"
     ./gen_plot_source.py -g ejackpot -q
-    echo "./anim.sh ejackpot"
-    ./anim.sh ejackpot
+    echo "./anim.sh -q -g ejackpot"
+    ./anim.sh -q -g ejackpot
 else
     echo "No new results needed"
 fi

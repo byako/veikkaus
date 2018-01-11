@@ -5,6 +5,7 @@ import sys
 import json
 import getopt
 import os.path
+import datetime
 
 GAMES = {"LOTTO":{"numbersLimit":40, "additionalLimit":40},"EJACKPOT":{"numbersLimit":50, "additionalLimit":10} }
 COMMON_STATS = []
@@ -12,7 +13,6 @@ PRIMARY_STATS = []
 ADDITIONAL_STATS = []
 
 AVERAGE_STATS = 0
-YEARS = [ "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017"]
 QUIET = False
 GAME = "unknown"
 
@@ -44,7 +44,7 @@ def process_results():
     global QUIET
     counter = 0;
     setup()
-    for year in YEARS:
+    for year in range(2009, datetime.datetime.now().year + 1):
         for week in range(0, 54):
             filename = "results/" + GAME + "_" + str(year) + "_" + str(week) + ".json"
             plot_p_filename = "plot/" + GAME + "_" + str(year) + "_" + str(week).zfill(2) + "_p.data"

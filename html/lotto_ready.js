@@ -28,6 +28,7 @@ function loadResults()
             results = parseResult;
             console.log("Got " + results.length + " results for " + game + ", parsing...");
             processResults();
+            adjustHeight();
         }
     }
 
@@ -77,6 +78,11 @@ function loadCookies() {
         }
         renderFields();
     }
+}
+
+function adjustHeight() {
+    var tdiv = document.getElementById("_oldResultsTable_");
+    tdiv.tBodies[0].style.height = "" + window.innerHeight - 400 + "px";
 }
 
 $(document).ready(function() {
