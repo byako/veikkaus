@@ -8,6 +8,19 @@ LAST_YEAR=$(echo $LAST_RESULT | jq ".year" | sed 's/"//g')
 
 echo "last fetched week:$LAST_WEEK"
 echo "current week:$WEEKN"
+failure="false"
+
+gnuplot --version > /dev/null 2>1 || {
+    echo "Install gnuplot"
+    failure="true"
+}
+
+jq --version > /dev/null 2>&1 || {
+    echo "Install jq"
+    failure="true"
+}
+
+[ "${failure}" == "true" ] && exit 1
 
 if [ "$LAST_YEAR" -ne "$YEARN" ]; then
     echo "year mismatch, do update manually"
