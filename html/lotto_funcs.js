@@ -514,8 +514,8 @@ function updateHistSize() {
     console.log("checking new history size value:" + tempHistLength);
     if (tempHistLength >= results.length) {
         console.log("entered history value is too high");
-        $("#histLengthInput").val(30);
-        tempHistLength = 30;
+        $("#histLengthInput").val(results.length);
+        tempHistLength = results.length;
     }
     if (tempHistLength < 0) {
         console.log("entered history value is less than zero");

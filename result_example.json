@@ -1,0 +1,274 @@
+{
+    "draws": [
+        {
+            "addonDraws": [
+                {
+                    "brandName": "Perjantai-Jokeri",
+                    "drawTime": 1534453200000,
+                    "gameName": "JOKERI",
+                    "gameRuleSet": {
+                        "prizeTierDescriptions": [
+                            {
+                                "drawType": "DOUBLING",
+                                "multiplier": 2,
+                                "numberOfMatchingSelections": 1,
+                                "numberOfSelections": 1
+                            }
+                        ]
+                    },
+                    "id": "2470",
+                    "jackpots": [
+                        {
+                            "amount": 0,
+                            "id": "PRIMARY"
+                        }
+                    ],
+                    "prizeTiers": [
+                        {
+                            "additionalPrizeTier": false,
+                            "drawType": "NORMAL",
+                            "multiplier": false,
+                            "name": "7 oikein",
+                            "shareAmount": 0,
+                            "shareCount": 0
+                        },
+                        {
+                            "additionalPrizeTier": false,
+                            "drawType": "NORMAL",
+                            "multiplier": false,
+                            "name": "6 oikein",
+                            "shareAmount": 2000000,
+                            "shareCount": 1
+                        },
+                        {
+                            "additionalPrizeTier": false,
+                            "drawType": "NORMAL",
+                            "multiplier": false,
+                            "name": "5 oikein",
+                            "shareAmount": 50000,
+                            "shareCount": 26
+                        },
+                        {
+                            "additionalPrizeTier": false,
+                            "drawType": "NORMAL",
+                            "multiplier": false,
+                            "name": "4 oikein",
+                            "shareAmount": 5000,
+                            "shareCount": 475
+                        },
+                        {
+                            "additionalPrizeTier": false,
+                            "drawType": "NORMAL",
+                            "multiplier": false,
+                            "name": "3 oikein",
+                            "shareAmount": 600,
+                            "shareCount": 4439
+                        },
+                        {
+                            "additionalPrizeTier": false,
+                            "drawType": "NORMAL",
+                            "multiplier": false,
+                            "name": "2 oikein",
+                            "shareAmount": 300,
+                            "shareCount": 23568
+                        },
+                        {
+                            "additionalPrizeTier": false,
+                            "drawType": "NORMAL",
+                            "multiplier": true,
+                            "name": "7 oikein",
+                            "shareAmount": 0,
+                            "shareCount": 0
+                        },
+                        {
+                            "additionalPrizeTier": false,
+                            "drawType": "NORMAL",
+                            "multiplier": true,
+                            "name": "6 oikein",
+                            "shareAmount": 4000000,
+                            "shareCount": 1
+                        },
+                        {
+                            "additionalPrizeTier": false,
+                            "drawType": "NORMAL",
+                            "multiplier": true,
+                            "name": "5 oikein",
+                            "shareAmount": 100000,
+                            "shareCount": 11
+                        },
+                        {
+                            "additionalPrizeTier": false,
+                            "drawType": "NORMAL",
+                            "multiplier": true,
+                            "name": "4 oikein",
+                            "shareAmount": 10000,
+                            "shareCount": 149
+                        },
+                        {
+                            "additionalPrizeTier": false,
+                            "drawType": "NORMAL",
+                            "multiplier": true,
+                            "name": "3 oikein",
+                            "shareAmount": 1200,
+                            "shareCount": 1020
+                        },
+                        {
+                            "additionalPrizeTier": false,
+                            "drawType": "NORMAL",
+                            "multiplier": true,
+                            "name": "2 oikein",
+                            "shareAmount": 600,
+                            "shareCount": 3597
+                        }
+                    ],
+                    "results": [
+                        {
+                            "primary": [
+                                "8",
+                                "1",
+                                "0",
+                                "5",
+                                "0",
+                                "6",
+                                "6"
+                            ]
+                        }
+                    ],
+                    "status": "PAYABLE"
+                },
+                {
+                    "brandName": "Perjantai-Lomatonni",
+                    "drawTime": 1534453200000,
+                    "gameName": "RAFFLE",
+                    "id": "392",
+                    "prizeTiers": [
+                        {
+                            "id": "1",
+                            "name": "Kaupunki ja numero oikein",
+                            "shareAmount": 100000,
+                            "shareCount": 19
+                        },
+                        {
+                            "id": "2",
+                            "name": "Kaupunki oikein",
+                            "shareAmount": 500,
+                            "shareCount": 1223
+                        }
+                    ],
+                    "results": [
+                        {
+                            "drawType": "NORMAL",
+                            "primary": [
+                                "18"
+                            ],
+                            "secondary": [
+                                "14"
+                            ]
+                        }
+                    ],
+                    "status": "PAYABLE"
+                }
+            ],
+            "brandName": "EuroJackpot",
+            "drawTime": 1534453200000,
+            "gameName": "EJACKPOT",
+            "id": "335",
+            "jackpots": [
+                {
+                    "amount": -1,
+                    "id": "PRIMARY"
+                }
+            ],
+            "prizeTiers": [
+                {
+                    "additionalPrizeTier": false,
+                    "name": "5+2 oikein",
+                    "shareAmount": 0,
+                    "shareCount": 0
+                },
+                {
+                    "additionalPrizeTier": false,
+                    "name": "5+1 oikein",
+                    "shareAmount": 36964850,
+                    "shareCount": 5
+                },
+                {
+                    "additionalPrizeTier": false,
+                    "name": "5 oikein",
+                    "shareAmount": 13046410,
+                    "shareCount": 5
+                },
+                {
+                    "additionalPrizeTier": false,
+                    "name": "4+2 oikein",
+                    "shareAmount": 483200,
+                    "shareCount": 45
+                },
+                {
+                    "additionalPrizeTier": false,
+                    "name": "4+1 oikein",
+                    "shareAmount": 22280,
+                    "shareCount": 878
+                },
+                {
+                    "additionalPrizeTier": false,
+                    "name": "4 oikein",
+                    "shareAmount": 11180,
+                    "shareCount": 1361
+                },
+                {
+                    "additionalPrizeTier": false,
+                    "name": "3+2 oikein",
+                    "shareAmount": 5800,
+                    "shareCount": 2246
+                },
+                {
+                    "additionalPrizeTier": false,
+                    "name": "2+2 oikein",
+                    "shareAmount": 2220,
+                    "shareCount": 30329
+                },
+                {
+                    "additionalPrizeTier": false,
+                    "name": "3+1 oikein",
+                    "shareAmount": 1640,
+                    "shareCount": 39737
+                },
+                {
+                    "additionalPrizeTier": false,
+                    "name": "3 oikein",
+                    "shareAmount": 1560,
+                    "shareCount": 59752
+                },
+                {
+                    "additionalPrizeTier": false,
+                    "name": "1+2 oikein",
+                    "shareAmount": 1050,
+                    "shareCount": 160574
+                },
+                {
+                    "additionalPrizeTier": false,
+                    "name": "2+1 oikein",
+                    "shareAmount": 740,
+                    "shareCount": 557957
+                }
+            ],
+            "results": [
+                {
+                    "primary": [
+                        "2",
+                        "12",
+                        "32",
+                        "43",
+                        "44"
+                    ],
+                    "secondary": [
+                        "3",
+                        "4"
+                    ]
+                }
+            ],
+            "status": "PAYABLE"
+        }
+    ]
+}
