@@ -8,17 +8,6 @@ import configparser
 from random import randint
 import numpy
 
-results = []
-settings = {
-    "adds_top":5,
-    "majors":2,
-    "mediums":2,
-    "lows":1,
-    "bets":1,
-    "iterations":0,
-    "config_file":"",
-    "quiet":True
-}
 
 def print_usage():
     """Print usage manual"""
@@ -27,10 +16,11 @@ def print_usage():
     print("-c <configfile>")
     sys.exit(0)
 
-def parse_arguments(arguments):
+def parse_arguments(arguments, settings):
     """Get week number and year out of arguments"""
-    global settings
     optlist, args = getopt.getopt(arguments, 'hqc:n:')
+    if len(args) != 0:
+        print("Unsupported parameters : %s" % args)
     for opt, arg in optlist:
         if opt == '-h':
             print_usage()
@@ -46,9 +36,8 @@ def parse_arguments(arguments):
     if settings["config_file"] == "":
         print_usage()
 
-def parse_config():
+def parse_config(settings):
     """Save argument text to argument config_file file if it does not exist"""
-    global settings
     config = configparser.RawConfigParser()
     config.read(settings["config_file"])
     settings["majors"] = config.getint("Main", "majors")
@@ -90,21 +79,22 @@ def read_latest_results():
     print("Found %d results" % len(latest_results))
     return latest_results
 
-def find_duplicates():
+def find_duplicates(results):
     """See if there were any identical rounds"""
-    global results
     longest_match = 0
-    longest_match_count = 0
-    d2_0_count = 0
-    d2_1_count = 0
-    d2_2_count = 0
-    d3_0_count = 0
-    d3_1_count = 0
-    d3_2_count = 0
-    d4_0_count = 0
-    d4_1_count = 0
-    d4_2_count = 0
     longest_match_infos = []
+    longest_match_count = 0
+    counts = {
+        'd2_0_count' : 0,
+        'd2_1_count' : 0,
+        'd2_2_count' : 0,
+        'd3_0_count' : 0,
+        'd3_1_count' : 0,
+        'd3_2_count' : 0,
+        'd4_0_count' : 0,
+        'd4_1_count' : 0,
+        'd4_2_count' : 0
+    }
     print("Looking for duplicates")
     for idx in range(0, len(results)):
         current_match = 0
@@ -123,23 +113,23 @@ def find_duplicates():
                     results[idx2]["numbers"], results[idx2]["adds"])
                 current_match = matches[0] + matches[1]
                 if matches[0] == 2 and matches[1] == 0:
-                    d2_0_count += 1
+                    counts['d2_0_count'] += 1
                 if matches[0] == 2 and matches[1] == 1:
-                    d2_1_count += 1
+                    counts['d2_1_count'] += 1
                 if matches[0] == 2 and matches[1] == 2:
-                    d2_2_count += 1
+                    counts['d2_2_count'] += 1
                 if matches[0] == 3 and matches[1] == 0:
-                    d3_0_count += 1
+                    counts['d3_0_count'] += 1
                 if matches[0] == 3 and matches[1] == 1:
-                    d3_1_count += 1
+                    counts['d3_1_count'] += 1
                 if matches[0] == 3 and matches[1] == 2:
-                    d3_2_count += 1
+                    counts['d3_2_count'] += 1
                 if matches[0] == 4 and matches[1] == 0:
-                    d4_0_count += 1
+                    counts['d4_0_count'] += 1
                 if matches[0] == 4 and matches[1] == 1:
-                    d4_1_count += 1
+                    counts['d4_1_count'] += 1
                 if matches[0] == 4 and matches[1] == 2:
-                    d4_2_count += 1
+                    counts['d4_2_count'] += 1
 
             if current_match > longest_match:
                 longest_match = current_match
@@ -162,15 +152,15 @@ def find_duplicates():
     if len(longest_match_infos) < 10:
         for info in longest_match_infos:
             print(info)
-    print("2:0 %d" %d2_0_count)
-    print("2:1 %d" %d2_1_count)
-    print("2:2 %d" %d2_2_count)
-    print("3:0 %d" %d3_0_count)
-    print("3:1 %d" %d3_1_count)
-    print("3:2 %d" %d3_2_count)
-    print("4:0 %d" %d4_0_count)
-    print("4:1 %d" %d4_1_count)
-    print("4:2 %d" %d4_2_count)
+    print("2:0 %d" %counts['d2_0_count'])
+    print("2:1 %d" %counts['d2_1_count'])
+    print("2:2 %d" %counts['d2_2_count'])
+    print("3:0 %d" %counts['d3_0_count'])
+    print("3:1 %d" %counts['d3_1_count'])
+    print("3:2 %d" %counts['d3_2_count'])
+    print("4:0 %d" %counts['d4_0_count'])
+    print("4:1 %d" %counts['d4_1_count'])
+    print("4:2 %d" %counts['d4_2_count'])
 
 def compare(lista1, lista2, listb1, listb2):
     """get number of matches in two lists"""
@@ -219,9 +209,8 @@ def get_money(mains, adds, year, week):
     print("WTF: %d/%d/%s/%s" %(mains, adds, year, week))
     return "       -.--"
 
-def skip_repetition(mains, adds):
+def skip_repetition(results, mains, adds):
     """Do not allow more than three main numbers with any previous result"""
-    global results
     matches = (0, 0)
     for idx in range(0, len(results)):
         matches = compare(
@@ -248,10 +237,10 @@ def gen_random():
     num2.sort()
     return (num1, num2)
 
-def gen_stat(idx):
+def gen_stat(idx, data):
     """for current stats generate projection"""
-    global settings
-    global results
+    settings = data['settings']
+    results = data['results']
     stat_debug = 0
     num1 = []
     num2 = []
@@ -305,15 +294,15 @@ def gen_stat(idx):
     num2.sort()
     return(num1, num2)
 
-def project():
+def project(data):
     """ Randomize and see what happens """
-    global settings
-    global results
+    settings = data['settings']
+    results = data['results']
     if settings["iterations"] > 1:
         settings["quiet"] = True
     rate_avg = 0
     # how many times go through all results (simulations number)
-    for useless_var in range(0, settings["iterations"]):
+    for _ in range(0, settings["iterations"]):
         wins = 0
         income = 0
         rounds = 0
@@ -322,15 +311,15 @@ def project():
             print("ERROR: no results")
             sys.exit(4)
         for idx in range(0, len(results)-1):
-            for rounds_idx in range(0, 1):
+            for _ in range(0, 1):
                 rounds += 1
                 # least accurate:
                 #(num1, num2) = gen_random()
                 # better
                 skip = True
-                while skip == True:
-                    (num1, num2) = gen_stat(idx)
-                    skip = skip_repetition(num1, num2)
+                while skip:
+                    (num1, num2) = gen_stat(idx, data)
+                    skip = skip_repetition(results, num1, num2)
                     if skip:
                         skipped += 1
 
@@ -354,20 +343,30 @@ def project():
         rate_avg += (wins / rounds)
     print("Rate_avg:        %3.4f" % (rate_avg / settings["iterations"]))
 
-def process():
+def stat_relative(data):
+    """Assuming that stats were generated, show how popular numbers are drawn"""
+    print("relative_stats:")
+    for idx in range(10, len(data['results'])):
+        relative_stats = []
+        sorted_stat = numpy.argsort(data['results'][idx-1]["stats_main"]).tolist()
+        # optionally - sort
+        for num in data['results'][idx]["numbers"]:
+            relative_stats.append(sorted_stat.index(num))
+        relative_stats.sort()
+        print(relative_stats)
+
+def process(data):
     """Main logic"""
-    global settings
-    global results
-    print(settings)
-    results = read_latest_results()
+    print(data['settings'])
+    data['results'] = read_latest_results()
     stats_main = []
     stats_adds = []
-    for idx in range(0, 11):
+    for _ in range(0, 11):
         stats_adds.append(0)
-    for idx in range(0, 51):
+    for _ in range(0, 51):
         stats_main.append(0)
     # populate stats per round
-    for result in results:
+    for result in data['results']:
         for num in result["numbers"]:
             stats_main[num] += 1
         result["stats_main"] = stats_main.copy()
@@ -375,16 +374,31 @@ def process():
             stats_adds[num] += 1
         #print(stats_adds)
         result["stats_adds"] = stats_adds.copy()
-    find_duplicates()
-    #project()
+    #find_duplicates(data['results'])
+    #project(data)
+    stat_relative(data)
     sys.exit(0)
 
 def starter(arguments):
     """Validate arguments and process results"""
 
-    parse_arguments(arguments)
-    parse_config()
-    process()
+    data = {
+        'results': [],
+        'settings': {
+            "adds_top":5,
+            "majors":2,
+            "mediums":2,
+            "lows":1,
+            "bets":1,
+            "iterations":0,
+            "config_file":"",
+            "quiet":True
+        }
+    }
+
+    parse_arguments(arguments, data['settings'])
+    parse_config(data['settings'])
+    process(data)
 
 if __name__ == "__main__":
     starter(sys.argv[1:])

@@ -59,7 +59,7 @@ for i in `ls plot/${GAME}*_c.data | sed 's/plot\///' | sed 's/_c\.data//'`; do
         recreate=1
         gnuplot -e "avgfn=\"$avgSrc\"; primfn=\"$primSrc\"; targetfn=\"$primTarget\"" "${GAME}_plot_prim.gnuplot";
         gnuplot -e "addsfn=\"$addsSrc\"; targetfn=\"$addsTarget\"" "${GAME}_plot_adds.gnuplot";
-        TOTAL=$((total + 1))
+        TOTAL=$((TOTAL + 1))
     fi
 done;
 
