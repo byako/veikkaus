@@ -33,7 +33,7 @@ do
     esac
 done
 
-if [ "$GAME" != "LOTTO" ] && [ "${GAME}" != "EJACKPOT" ]; then
+if [ "$GAME" != "lotto" ] && [ "${GAME}" != "ejackpot" ]; then
     printUsage
 fi
 
@@ -49,12 +49,12 @@ for i in `ls plot/${GAME}*_c.data | sed 's/plot\///' | sed 's/_c\.data//'`; do
 	addsSrc="plot/${i}_a.data";
     primTarget="png/${i}_p.png"
     addsTarget="png/${i}_a.png"
-    if [ "${GAME}" == "LOTTO" ]; then
+    if [ "${GAME}" == "lotto" ]; then
         [ -f "png/${i}.png" ] && continue;
         recreate=1
         gnuplot -e "sourcefn=\"$commonSrc\"; avgfn=\"$avgSrc\"; primfn=\"$primSrc\"; targetfn=\"png/${i}.png\"" "${GAME}_plot.gnuplot";
         TOTAL=$((TOTAL + 1))
-    else # EJACKPOT
+    else # ejackpot
         [ -f "$primTarget" ] && continue;
         recreate=1
         gnuplot -e "avgfn=\"$avgSrc\"; primfn=\"$primSrc\"; targetfn=\"$primTarget\"" "${GAME}_plot_prim.gnuplot";
@@ -67,10 +67,10 @@ echo "Total: $TOTAL"
 
 if [ "x$recreate" == "x1" ]; then
     [ -f "$output_file" ] && rm "$output_file"
-    if [ "${GAME}" == "LOTTO" ]; then
+    if [ "${GAME}" == "lotto" ]; then
         [ -z "${QUIET}" ] && echo "creating new animated gif: $output_file"
         convert -delay 5 "png/${GAME}*png" "$output_file"
-    else # EJACKPOT
+    else # ejackpot
         [ -z "${QUIET}" ] && echo "creating new animated gif: $output_file"
         convert -delay 5 "png/${GAME}*_p.png" "$output_file"
         [ -z "${QUIET}" ] && echo "creating new animated gif: $output_file2"

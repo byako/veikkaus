@@ -7,7 +7,7 @@ import getopt
 import os.path
 import datetime
 
-GAMES = {"LOTTO":{"numbersLimit":40, "additionalLimit":40},"EJACKPOT":{"numbersLimit":50, "additionalLimit":10} }
+GAMES = {"lotto":{"numbersLimit":40, "additionalLimit":40},"ejackpot":{"numbersLimit":50, "additionalLimit":10} }
 COMMON_STATS = []
 PRIMARY_STATS = []
 ADDITIONAL_STATS = []
@@ -65,9 +65,9 @@ def process_results():
                             ADDITIONAL_STATS[int(rsec)-1] += 1
                 tmpAvg = 0
                 for tmpIdx in range(0,GAMES[GAME]["numbersLimit"]):
-                    if GAME == "LOTTO":
+                    if GAME == "lotto":
                         tmpAvg += COMMON_STATS[tmpIdx]
-                    elif GAME == "EJACKPOT":
+                    elif GAME == "ejackpot":
                         tmpAvg += PRIMARY_STATS[tmpIdx]
             
                 AVERAGE_STATS = tmpAvg / GAMES[GAME]["numbersLimit"]
@@ -115,13 +115,13 @@ def parse_arguments(arguments):
             QUIET = True
         elif o == '-g':
             if a == 'lotto':
-                GAME = 'LOTTO'
+                GAME = 'lotto'
             elif a == 'ejackpot':
-                GAME = 'EJACKPOT'
+                GAME = 'ejackpot'
 
 if __name__ == "__main__":
     parse_arguments(sys.argv[1:])
-    if GAME != 'LOTTO' and GAME != 'EJACKPOT':
+    if GAME != 'lotto' and GAME != 'ejackpot':
         print('ERROR: unsupported game: %s' % GAME)
         print('usage: %s [-q] -g <game>\n -g <game> Supported games: lotto, ejackpot\n -q quet mode' % sys.argv[0])
         exit(-1)

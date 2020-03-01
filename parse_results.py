@@ -40,9 +40,9 @@ def parse_arguments(arguments):
             params["regenerate"] = True
         elif o == '-g':
             if a == "lotto":
-                params["game"] = "LOTTO"
+                params["game"] = "lotto"
             elif a == "ejackpot":
-                params["game"] = "EJACKPOT"
+                params["game"] = "ejackpot"
     return params
 
 def read_from_file(filename):
@@ -106,7 +106,7 @@ def print_draw(params):
                                                      prize["shareAmount"] / 100,
                                                      prize["shareAmount"] % 100,
                                                      prize["name"]), end='')
-                    if params["game"] == "LOTTO":
+                    if params["game"] == "lotto":
                         if prize["multiplier"] == True:
                             print(" : x2", end='')
                     print('')
@@ -152,7 +152,7 @@ def starter(arguments):
             print("Week number is too big for this year")
             do_print_usage = True
 
-    if params["game"] != "EJACKPOT" and params["game"] != "LOTTO":
+    if params["game"] != "ejackpot" and params["game"] != "lotto":
         print("Supported games: ejackpot, lotto")
         do_print_usage = True
 

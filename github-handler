@@ -1,0 +1,56 @@
+<?php
+$git_path=/var/git
+$deploy_exec=deploy.sh
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    $headersList = getallheaders();
+    if ( ! array_key_exists("X-Hub-Signature", $headersList) || $headersList["X-Hub-Signature"] != "sha1=$(GET_FROM_GITHUB}") {
+        header("HTTP1/1 400 Bad Request");
+        return;
+    } else {
+        error_log("X-Hub-Signature verified, proceeding");
+    }
+
+    $request_body = file_get_contents('php://input');
+    $data = json_decode($request_body, true);
+
+    if ($data != NULL) {
+        error_log("JSON:");
+        if (is_array($data)) {
+            if (array_key_exists("repository", $data) && "array" === gettype($data["repository"])) {
+                $repo = $data["repository"];
+                if (array_key_exists("full_name", $repo) && $repo["full_name"] === "byako/veikkaus") {
+                    error_log("repository is Veikkaus");
+                    if (array_key_exists("ref", $data) && $data["ref"] === "refs/heads/master" ) {
+                        error_log("pushed : " . $data["after"]);
+                        $exec_file = $git_path . $repo["name"] . $deploy_exec;
+                        if (file_exists($exec_file)) {
+                            if (is_executable($exec_file)) {
+                                $rc = exec($exec_file);
+                                if ($rc == "0") {
+                                    // do nothing, RC 200 is automatic
+                                    return;
+                                } 
+                            }
+                        }
+                        header("HTTP1/1 500 Internal Server Error");
+                    } else {
+                        error_log("push is not to master");
+                    }
+                } else { // unsupported repository
+                    error_log("repository is not Veikkaus");
+                }
+            } else {
+                error_log("repository is not specified");
+            }
+        } else {
+            error_log("not an array: " . gettype($data));
+        }
+    }
+
+} else {
+    error_log("Not a post");
+}
+
+?>

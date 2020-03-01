@@ -79,9 +79,9 @@ def parse_arguments(arguments):
             params["week"] = a
         elif o == '-g':
             if a == "lotto":
-                params["game"] = "LOTTO"
+                params["game"] = "lotto"
             elif a == "ejackpot":
-                params["game"] = "EJACKPOT"
+                params["game"] = "ejackpot"
     return params
 
 def get_draw(params):
@@ -130,7 +130,7 @@ def get_draw(params):
                                                      prize["shareAmount"] / 100,
                                                      prize["shareAmount"] % 100,
                                                      prize["name"]), end='')
-                    if params["game"] == "LOTTO":
+                    if params["game"] == "lotto":
                         if prize["multiplier"] == True:
                             print(" : x2", end='')
                     print('')
@@ -157,7 +157,7 @@ def starter(arguments):
     elif params["year"] == str(datetime.datetime.now().year) and int(params["week"]) > \
                            datetime.datetime.now().isocalendar()[1]:
         print("Week number is too big for this year")
-    elif params["game"] != "EJACKPOT" and params["game"] != "LOTTO":
+    elif params["game"] != "ejackpot" and params["game"] != "lotto":
         print("Supported games: ejackpot, lotto")
     else:
         get_draw(params)

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LAST_RESULT=$(tail -1 latest_EJACKPOT.json |sed 's/},$/}/')
+LAST_RESULT=$(tail -1 latest_ejackpot.json |sed 's/},$/}/')
 WEEKN=$(date +%V)
 YEARN=$(date +%Y)
 LAST_WEEK=$(echo $LAST_RESULT | jq ".week" | sed 's/"//g')
