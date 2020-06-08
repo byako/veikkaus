@@ -10,24 +10,22 @@ import getopt
 import os.path
 import subprocess
 
-def print_usage():
-    """Print usage manual"""
-    print("\n Usage: ")
-    print('[-r|--regenerate] re-generate latest_$GAME.json file from results/*json')
-    print("-h prints this help")
-    print('-g <game>')
-    print("-w <week number[1..53]>")
-    print("-y <year number[2010..$CurYear]>")
+def _print_usage():
+    print("""\n Usage:
+[-r|--regenerate] re-generate latest_ejackpot.json file from results/*json
+-h prints this help
+-w <week number[1..53]>
+-y <year number[2010..$CurYear]>"""
     sys.exit(0)
 
 def parse_arguments(arguments):
     """Get week number and year out of arguments"""
-    optlist, args = getopt.getopt(arguments, 'ha:w:y:g:r')
+    optlist, args = getopt.getopt(arguments, 'ha:w:y:r')
     params = {
         "regenerate":False,
         "year":"1970",
         "week":"54",
-        "game":"unknown"
+        "game":"ejackpot"
     }
     for o, a in optlist:
         if o == '-h':
@@ -38,11 +36,6 @@ def parse_arguments(arguments):
             params["week"] = a
         elif o == '-r':
             params["regenerate"] = True
-        elif o == '-g':
-            if a == "lotto":
-                params["game"] = "lotto"
-            elif a == "ejackpot":
-                params["game"] = "ejackpot"
     return params
 
 def read_from_file(filename):

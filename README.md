@@ -1,8 +1,8 @@
 Set of scripts to fetch, and animate results of lotto
 ./update.sh - download missing results for ejackpot and re-generate
-graphs: callls fetch-results.py, gen_plot.source.py, anim.sh
+graphs: callls fetch_results.py, gen_plot.source.py, anim.sh
 
-./fetch-results.py - gets result of veikkaus lotto for single week
+./fetch_results.py - gets result of veikkaus lotto for single week
  - saves JSON into ./results/*
  - takes parameters : year (2009-$YEAR), week (0-52)
 

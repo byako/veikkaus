@@ -1,3 +1,5 @@
 plot/*
 png/*
 anim.gif
+.*.swp
+.tox/
