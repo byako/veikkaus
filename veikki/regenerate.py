@@ -33,7 +33,7 @@ def regenerate_latest(params) -> None:
         if not filename:
             continue
         filepath = os.path.join("results", filename)
-        logger.debug("%s (%s)", filepath, filename)
+        logger.debug("%s", filepath)
         with open(filepath) as draw_file:
             jsdraw = json.load(draw_file)
             results.append(parse_draw(jsdraw))
@@ -70,7 +70,9 @@ def refetch_all(params: dict) -> None:
                 w52 = w53
             elif idx_week == 53:
                 if w52["id"] == w53["id"]:
-                    filename = "ejackpot_%s_%s.json"
+                    filename = (
+                        f'ejackpot_{params["year"]}_{params["week"]}.json'
+                    )
                     filepath = os.path.join("results", filename)
                     logger.debug("No w53 result, deleting file %s", filepath)
-                    # os.remove(filepath)
+                    os.remove(filepath)

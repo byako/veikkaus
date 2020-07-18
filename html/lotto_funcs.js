@@ -132,10 +132,8 @@ function drawHistory() {
                 }
                 cell_.roundNumber=i;
             }
-            if ("flags" in results[i]) {
-                if (results[i]["flags"]["jp"] === true) {
-                    row_.style.backgroundColor = "#f3c22b";
-                }
+            if ("jackpot_won" in results[i] && results[i].jackpot_won === true) {
+                row_.style.backgroundColor = "#807d53";
             }
         }
     }

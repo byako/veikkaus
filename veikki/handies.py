@@ -18,9 +18,7 @@ TEMPLATE_DRAW = {
     "scores": [],
     "jackpot_value": None,
     "jackpot_won": False,
-    "flags": {
-        "jp": False
-    }
+    "flags": {"jp": False},
 }
 
 
