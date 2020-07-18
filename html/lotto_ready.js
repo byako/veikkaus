@@ -20,7 +20,7 @@ function loadResults()
     }
     xmlhttp.onreadystatechange=function() {
         if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-            var parseResult = JSON.parse("[" + xmlhttp.responseText + "{}]");
+            var parseResult = JSON.parse(xmlhttp.responseText);
             if (parseResult == undefined) {
                 console.log("Could not parse results data received from server");
                 return;

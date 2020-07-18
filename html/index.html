@@ -11,17 +11,15 @@
     <link href="lotto-style.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="bootstrap.min.css">
 </head>
-<body>
+<body class="bg-dark text-white">
     <div class="container-fluid">
-        <div class="row" style="background-color:#bbb;">
+        <div class="row" style="background-color:#333;color:#fff;">
             <div class="col-md-3">
                 <div class="dropdown">
-                    <button id="switchGameButton" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">LOTTO
+                    <button id="switchGameButton" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">ejackpot
                     <span class="caret"></span></button>
                     <ul class="dropdown-menu">
-                        <li><a href="javascript:switchGame('LOTTO');">LOTTO</a></li>
-                        <li><a href="javascript:switchGame('EJACKPOT');">EJACKPOT</a></li>
-                        <li class="disabled"><a href="#">JOKERI</a></li>
+                        <li><a href="javascript:switchGame('ejackpot');">ejackpot</a></li>
                     </ul>
                 </div>
             </div>
@@ -29,7 +27,7 @@
                 <input id="showFieldsCheckbox" type="checkbox" name="showFields" value="true" checked onchange="showFieldsChanged(this);" />
                 <label for="showFields">Show fields</label>
             </div>
-            <div class="col-md-3" id="historyLengthDiv">
+            <div class="col-md-3" id="historyLengthDiv" style="color:#f00">
                 <span>Shown last results
                     <input type="number" id="histLengthInput" style="width:50px" value="52" onchange="updateHistSize()"/>
                 </span>
@@ -40,8 +38,8 @@
             </div>
         </div>
         <div id="mid-cont"><!-- middle-container -->
-            <div style="display:inline-block;color:#fff;"><!-- vertical wrapper -->
-                <img id="gnuplotted" src="png/latest_LOTTO.png" />
+            <div style="display:inline-block;"><!-- vertical wrapper -->
+                <img id="gnuplotted" src="png/latest_ejackpot.png" />
 
                 <div id="_oldResults_" style="width: 1300px; overflow:hidden;"> <!-- main container for dynamic log -->
                         <div id="_oldResultsTableDiv_">
@@ -67,22 +65,10 @@
                 </div>
             </div>
             <div id="detailedInfo" style="font-size:large; display:inline-block;vertical-align: top;">
-                <div style="display:inline-block;vertical-align: top; background: #aaa;">
+                <div style="display:inline-block;vertical-align: top;">
                     <div id="prizes">
-                        <div id="drawDate"></div>
-                        <hr/>
-                        <table id="prizesTable" width="100%" border="0">
-                            <tr>
-                                <th>header1</th>
-                                <th>header2</th>
-                                <th>header3</th>
-                            </tr>
-                                <td>cell1</td>
-                                <td>cell2</td>
-                                <td>cell3</td>
-                            <tr>
-                            </tr>
-                        </table>
+                        <div id="drawDate" style="word-wrap:normal"></div>
+                        <table id="prizesTable" width="100%" border="0" />
                     </div>
                 </div>
                 <div style="display:inline-block;">

@@ -5,17 +5,13 @@ QUIET=false
 TOTAL=0
 
 function printUsage {
-    echo "Usage: $0 -g <lotto|ejackpot> [-q]"
+    echo "Usage: $0 [-q]"
     echo -e "\t-q\tbe quiet"
     exit 1
 }
 
 [ -d plot ] || mkdir plot
 [ -d png ] || mkdir png
-[ $# -lt 1 ] && {
-    echo "ERROR: Not enough arguments";
-    printUsage
-}
 
 while [ $# -ne 0 ];
 do

@@ -5,6 +5,8 @@ a, a:hover, a:visited, a:active {
 	color:#EEEEEE;
 }
 body {
+    color: #eee;
+    background-color: #555 !important;;
 }
 
 tbody { display: block; }
@@ -20,7 +22,8 @@ tbody {
 
 #mid-cont
 {
-    background-color: #999;
+    background-color: #555;
+    color: #fff;
 }
 #config_
 {
@@ -34,7 +37,7 @@ div.nav
 	text-align:center;
 	border:1px solid #8080AA;
 	white-space:pre-wrap;
-	background-color: #ffffff;
+	background-color: #999;
 }
 div.navBar
 {
@@ -44,7 +47,7 @@ div.navBar
 	text-align:center;
 	border:1px solid #8080AA;
 	white-space:pre-wrap;
-	background-color: #ffffff;
+	background-color: #999;
 }
 div.navBar:hover
 {
@@ -64,19 +67,19 @@ div.nav:hover
     width:20px;
     height:20px;
     text-align:center;
-    background-color: #66A;
+    background-color: #333;
 }
 .tableCellAdditional {
     width:20px;
     height:20px;
     text-align:center;
-    background-color: #383;
+    background-color: #363;
 }
 .tableCell:hover {
     background-color: #777;
 }
 .tableCellStandard:hover {
-    background-color: #88C;
+    background-color: #55C;
 }
 .tableCellAdditional:hover {
     background-color: #5A5;

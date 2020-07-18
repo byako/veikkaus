@@ -3,3 +3,4 @@ png/*
 anim.gif
 .*.swp
 .tox/
+__pycache__/
