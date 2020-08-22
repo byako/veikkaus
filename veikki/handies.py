@@ -3,6 +3,7 @@ common functions for modules
 """
 from copy import deepcopy
 import json
+import os
 import time
 import logging
 
@@ -20,6 +21,23 @@ TEMPLATE_DRAW = {
     "jackpot_won": False,
     "flags": {"jp": False},
 }
+
+
+def print_latest_result_date(params: dict) -> str:
+    """
+    get the date of latest saved result
+    """
+    if os.path.exists(params["latest_file"]):
+        with open(params["latest_file"], "r+") as json_file:
+            results = json.load(json_file)
+            logger.error(
+                "%s / %s : %s",
+                results[-1]["year"],
+                results[-1]["week"],
+                results[-1]["date"],
+            )
+    else:
+        logger.error("could not find latest file: %s", params["latest_file"])
 
 
 def print_draw(parsed_draw: dict) -> None:

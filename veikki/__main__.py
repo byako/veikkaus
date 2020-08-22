@@ -7,7 +7,7 @@ import getopt
 import logging
 import sys
 
-from handies import load_and_print_draw
+from handies import load_and_print_draw, print_latest_result_date
 from fetch_results import get_draw
 from gen_plot_source import gen_plot_source
 from regenerate import refetch_all, regenerate_latest
@@ -40,6 +40,7 @@ Usage: %s [command]
 
 commands = {
     "fetch": get_draw,
+    "latest": print_latest_result_date,
     "parse": load_and_print_draw,
     "regen": regenerate_latest,
     "refetch": refetch_all,
