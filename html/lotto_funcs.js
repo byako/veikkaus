@@ -87,7 +87,7 @@ function swapImage(roundNumber) {
     if (roundNumber < results.length) {
         var weekn = parseInt(results[roundNumber].week);
         var yearn = results[roundNumber].year;
-        var newURL = "png/" + game + "_" + yearn + "_" + ("0" + weekn).slice(-2) + "_p.png";
+        var newURL = "png/" + game + "_" + yearn + "_" + weekn + ".png";
         console.log("replacing picture with " + newURL);
         document.getElementById("gnuplotted").setAttribute("src", newURL);
     }

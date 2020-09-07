@@ -1,3 +1,5 @@
+matplotlib
+numpy
 requests
 black
 flake8

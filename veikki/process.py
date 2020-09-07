@@ -71,20 +71,18 @@ def read_latest_results():
     if not os.path.exists(latest_file):
         print("file does not exist: " + latest_file)
         return latest_results
-    else:
-        try:
-            iff = open(latest_file, "r")
-            text_contents = "[" + iff.read()[:-2] + "]"
-            iff.close()
-        except IOError as err:
-            print(
-                "Could not open / read from file :"
-                + latest_file
-                + ", error:"
-                + err
-            )
-            iff.close()
-            return latest_results
+
+    try:
+        iff = open(latest_file, "r")
+        text_contents = "[" + iff.read()[:-2] + "]"
+        iff.close()
+    except IOError as err:
+        print(
+            "Could not open / read from file :" + latest_file + ", error:" + err
+        )
+        iff.close()
+        return latest_results
+
     latest_results = json.loads(text_contents)
     print("Found %d results" % len(latest_results))
     return latest_results
@@ -107,31 +105,31 @@ def find_duplicates(results):
         "d4_2_count": 0,
     }
     print("Looking for duplicates")
-    for idx in range(0, len(results)):
+    for idx, res in enumerate(results):
         current_match = 0
-        for idx2 in range(idx + 1, len(results)):
+        for idx2, res2 in enumerate(results[idx + 1 :]):
             print("%d / %d" % (idx, idx2), end="\r")
-            if results[idx2]["numbers"] == results[idx]["numbers"]:
+            if results[idx2]["numbers"] == res["numbers"]:
                 print(
                     "\n%s %s %s / %s: %s / %s %s %s\n"
                     % (
-                        results[idx]["year"],
-                        results[idx]["week"],
-                        results[idx]["numbers"],
-                        results[idx]["adds"],
-                        results[idx2]["numbers"],
-                        results[idx2]["adds"],
-                        results[idx2]["year"],
-                        results[idx2]["week"],
+                        res["year"],
+                        res["week"],
+                        res["numbers"],
+                        res["adds"],
+                        res2["numbers"],
+                        res2["adds"],
+                        res2["year"],
+                        res2["week"],
                     )
                 )
                 current_match = 7
             else:
                 matches = compare(
-                    results[idx]["numbers"],
-                    results[idx]["adds"],
-                    results[idx2]["numbers"],
-                    results[idx2]["adds"],
+                    res["numbers"],
+                    res["adds"],
+                    res2["numbers"],
+                    res2["adds"],
                 )
                 current_match = matches[0] + matches[1]
                 if matches[0] == 2 and matches[1] == 0:
@@ -159,28 +157,28 @@ def find_duplicates(results):
                 longest_match_infos = []
                 longest_match_infos.append(
                     (
-                        results[idx]["year"],
-                        results[idx]["week"],
-                        results[idx]["numbers"],
-                        results[idx]["adds"],
-                        results[idx2]["numbers"],
-                        results[idx2]["adds"],
-                        results[idx2]["year"],
-                        results[idx2]["week"],
+                        res["year"],
+                        res["week"],
+                        res["numbers"],
+                        res["adds"],
+                        res2["numbers"],
+                        res2["adds"],
+                        res2["year"],
+                        res2["week"],
                     )
                 )
             elif current_match == longest_match:
                 longest_match_count += 1
                 longest_match_infos.append(
                     (
-                        results[idx]["year"],
-                        results[idx]["week"],
-                        results[idx]["numbers"],
-                        results[idx]["adds"],
-                        results[idx2]["numbers"],
-                        results[idx2]["adds"],
-                        results[idx2]["year"],
-                        results[idx2]["week"],
+                        res["year"],
+                        res["week"],
+                        res["numbers"],
+                        res["adds"],
+                        res2["numbers"],
+                        res2["adds"],
+                        res2["year"],
+                        res2["week"],
                     )
                 )
     print(

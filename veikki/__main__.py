@@ -9,7 +9,7 @@ import sys
 
 from handies import load_and_print_draw, print_latest_result_date
 from fetch_results import get_draw
-from gen_plot_source import gen_plot_source
+from gen_plot_source import plot_all
 from regenerate import refetch_all, regenerate_latest
 
 
@@ -44,8 +44,8 @@ commands = {
     "parse": load_and_print_draw,
     "regen": regenerate_latest,
     "refetch": refetch_all,
-    "genplotsource": gen_plot_source,
     "help": _print_usage_and_exit,
+    "plot": plot_all,
 }
 
 
