@@ -564,7 +564,7 @@ function processExtendedResultInfo(draw) {
     var drawDateDiv = document.getElementById("drawDate");
     if (drawDateDiv) {
         var drawtime = new Date(parseInt(draw["drawTime"]));
-        drawDateDiv.innerHTML = "" + drawtime;
+        drawDateDiv.innerHTML = ("" + drawtime).replace(/ GMT\+0.*/, '');
     }
 
     /* render table with payable prizes */
