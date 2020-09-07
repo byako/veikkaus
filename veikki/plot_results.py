@@ -21,7 +21,9 @@ def plot_one(primary: list, additional: list, average: int, filename: str):
     adds = [idx for idx in range(1, CONFIG["additionalLimit"] + 1)]
 
     fig, ax = pyplot.subplots()
-    fig.set_size_inches(13, 2)
+    fig.set_size_inches(13, 2.5)
+    ax.yaxis.set_major_locator(MultipleLocator(5))
+    ax.yaxis.set_minor_locator(AutoMinorLocator(5))
     ax.xaxis.set_major_locator(MultipleLocator(5))
     ax.xaxis.set_minor_locator(AutoMinorLocator(5))
     ax.plot(nums, primary, label="primary")

@@ -9,7 +9,7 @@ import sys
 
 from handies import load_and_print_draw, print_latest_result_date
 from fetch_results import get_draw
-from gen_plot_source import plot_all
+from plot_results import plot_all
 from regenerate import refetch_all, regenerate_latest
 
 
