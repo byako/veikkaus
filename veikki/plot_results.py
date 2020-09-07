@@ -5,7 +5,7 @@ import json
 import logging
 import os.path
 from matplotlib import pyplot
-from matplotlib.ticker import (AutoMinorLocator, MultipleLocator)
+from matplotlib.ticker import AutoMinorLocator, MultipleLocator
 
 logger = logging.getLogger("veikkilogger")
 logger.setLevel(logging.DEBUG)
@@ -13,12 +13,11 @@ logger.setLevel(logging.DEBUG)
 CONFIG = {"numbersLimit": 50, "additionalLimit": 10}
 
 
-def plot_one(primary: list, additional: list, average: int, filename: str):
+def plot_one(primary: list, average: int, filename: str):
     """ test plotting into file """
 
     avg_list = [average] * CONFIG["numbersLimit"]
     nums = [idx for idx in range(1, CONFIG["numbersLimit"] + 1)]
-    adds = [idx for idx in range(1, CONFIG["additionalLimit"] + 1)]
 
     fig, ax = pyplot.subplots()
     fig.set_size_inches(13, 2.5)
@@ -27,12 +26,11 @@ def plot_one(primary: list, additional: list, average: int, filename: str):
     ax.xaxis.set_major_locator(MultipleLocator(5))
     ax.xaxis.set_minor_locator(AutoMinorLocator(5))
     ax.plot(nums, primary, label="primary")
-    #ax.plot(adds, additional, label="additional")
     ax.plot(nums, avg_list, label="average")
     ax.legend()
-    ax.grid(which='both')
-    ax.grid(which='minor', alpha=0.2)
-    ax.grid(which='major', alpha=0.5)
+    ax.grid(which="both")
+    ax.grid(which="minor", alpha=0.2)
+    ax.grid(which="major", alpha=0.5)
     ax.set_xlim(1, CONFIG["numbersLimit"])
     fig.tight_layout()
 
@@ -65,4 +63,4 @@ def plot_all(params):
         average_stats = sum(primary_stats) / CONFIG["numbersLimit"]
         if not os.path.isfile(filename):
             logger.debug("plotting %s %s", draw["year"], draw["week"])
-            plot_one(primary_stats, additional_stats, average_stats, filename)
+            plot_one(primary_stats, average_stats, filename)

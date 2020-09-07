@@ -78,7 +78,8 @@ def read_latest_results():
         iff.close()
     except IOError as err:
         print(
-            "Could not open / read from file :" + latest_file + ", error:" + err
+            "Could not open / read from file : %s, error: %s"
+            % (latest_file, err)
         )
         iff.close()
         return latest_results

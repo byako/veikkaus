@@ -1,3 +1,5 @@
+[FORMAT]
+max-line-length=80
 [SIMILARITIES]
 min-similarity-lines=4
 ignore-comments=yes
