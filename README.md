@@ -1,15 +1,14 @@
-Set of scripts to fetch, and animate results of lotto
-./update.sh - download missing results for ejackpot and re-generate
-graphs: callls fetch_results.py, gen_plot.source.py, anim.sh
+# Veikki - Python module for Veikkaus' Eurojackpot results processing
 
-./fetch_results.py - gets result of veikkaus lotto for single week
- - saves JSON into ./results/*
- - takes parameters : year (2009-$YEAR), week (0-52)
+Supports:
+- mass-downloading all draw results
+- fetching single draw result
+- parsing particular draw result into human-friendly
+- plotting stats per draw-round
+- serving results via web-frontend in container
 
-./gen_plot_source.py - convert JSONs into gnuplot source
- - creates input files for gnuplot out of results/* into plot/*
- - takes no parameters, processes all files in results/*
+## Usage
 
-./anim.sh: creates anim.gif
- - creates with gnuplot 1000x200 px png/* images out of plot/*
- - combines with convert png/* into anime.gif
+```
+python3 veikki help
+```
