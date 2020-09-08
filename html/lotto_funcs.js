@@ -226,8 +226,8 @@ function selectNumber(e) {
             var i = numbersSelected.indexOf(newNumber);
             numbersSelected.splice(i,1);
         }
-        if (numbersSelected.length >= numbersLimit) {
-            coverage = coverage * newLength / (newLength - numbersLimit);
+        if (numbersSelected.length >= games[game].numbersLimit) {
+            coverage = coverage * newLength / (newLength - games[game].numbersLimit);
         } else {
             coverage = 1;
         }
