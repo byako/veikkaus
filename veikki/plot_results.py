@@ -2,8 +2,8 @@
 Generate stat graphs and save to files
 """
 import json
+import os
 import logging
-import os.path
 from matplotlib import pyplot
 from matplotlib.ticker import AutoMinorLocator, MultipleLocator
 
@@ -19,19 +19,20 @@ def plot_one(primary: list, average: int, filename: str):
     avg_list = [average] * CONFIG["numbersLimit"]
     nums = [idx for idx in range(1, CONFIG["numbersLimit"] + 1)]
 
-    fig, ax = pyplot.subplots()
+    fig, axes = pyplot.subplots()
     fig.set_size_inches(13, 2.5)
-    ax.yaxis.set_major_locator(MultipleLocator(5))
-    ax.yaxis.set_minor_locator(AutoMinorLocator(5))
-    ax.xaxis.set_major_locator(MultipleLocator(5))
-    ax.xaxis.set_minor_locator(AutoMinorLocator(5))
-    ax.plot(nums, primary, label="primary")
-    ax.plot(nums, avg_list, label="average")
-    ax.legend()
-    ax.grid(which="both")
-    ax.grid(which="minor", alpha=0.2)
-    ax.grid(which="major", alpha=0.5)
-    ax.set_xlim(1, CONFIG["numbersLimit"])
+    axes.yaxis.set_major_locator(MultipleLocator(5))
+    axes.yaxis.set_minor_locator(AutoMinorLocator(5))
+    axes.xaxis.set_major_locator(MultipleLocator(5))
+    axes.xaxis.set_minor_locator(AutoMinorLocator(5))
+    axes.plot(nums, primary, label="primary")
+    axes.plot(nums, avg_list, label="average")
+    axes.legend()
+    axes.grid(which="both")
+    axes.grid(which="minor", alpha=0.2)
+    axes.grid(which="major", alpha=0.5)
+    axes.set_xlim(1, CONFIG["numbersLimit"])
+    # axes.set_facecolor("xkcd:grey")
     fig.tight_layout()
 
     fig.savefig(filename, dpi=100)

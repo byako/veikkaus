@@ -23,21 +23,30 @@ TEMPLATE_DRAW = {
 }
 
 
-def print_latest_result_date(params: dict) -> str:
+def load_latest_file(params: dict) -> list:
     """
-    get the date of latest saved result
+    return JSON-parsed contents of latest results file
     """
     if os.path.exists(params["latest_file"]):
         with open(params["latest_file"], "r+") as json_file:
             results = json.load(json_file)
-            logger.error(
-                "%s / %s : %s",
-                results[-1]["year"],
-                results[-1]["week"],
-                results[-1]["date"],
-            )
+            return results
     else:
         logger.error("could not find latest file: %s", params["latest_file"])
+    return []
+
+
+def print_latest_result_date(params: dict) -> str:
+    """
+    get the date of latest saved result
+    """
+    results = load_latest_file(params)
+    logger.debug(
+        "%s / %s : %s",
+        results[-1]["year"],
+        results[-1]["week"],
+        results[-1]["date"],
+    )
 
 
 def print_draw(parsed_draw: dict) -> None:

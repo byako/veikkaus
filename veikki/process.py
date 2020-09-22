@@ -2,123 +2,99 @@
 Process all results, attempt forecast
 """
 
-import json
-import os.path
-import getopt
+import logging
 import sys
 import configparser
 from random import randint
 import numpy
 
+from handies import load_draw_from_file, load_latest_file
+
+logger = logging.getLogger("veikkilogger")
+logger.setLevel(logging.DEBUG)
+
 
 def print_usage():
     """Print usage manual"""
-    print("\n Usage: ")
-    print("-h prints this help")
-    print("-c <configfile>")
+    print(
+        """
+Usage:
+-h prints this help
+-c <configfile>
+"""
+    )
     sys.exit(0)
 
 
-def parse_arguments(arguments, settings):
-    """Get week number and year out of arguments"""
-    optlist, args = getopt.getopt(arguments, "hqc:n:")
-    if len(args) != 0:
-        print("Unsupported parameters : %s" % args)
-    for opt, arg in optlist:
-        if opt == "-h":
-            print_usage()
-        elif opt == "-c":
-            settings["config_file"] = arg
-        elif opt == "-n":
-            settings["iterations"] = int(arg)
-        elif opt == "-q":
-            settings["quiet"] = True
-        else:
-            print("ERROR: Unknown parameter %s" % opt)
-            sys.exit(1)
-    if settings["config_file"] == "":
-        print_usage()
-
-
-def parse_config(settings):
-    """Save argument text to argument config_file file if it does not exist"""
+def parse_config(params: dict) -> None:
+    """
+    Load and parse config file
+    """
     config = configparser.RawConfigParser()
-    config.read(settings["config_file"])
+    config.read(params["config"])
+    settings = params["settings"]
     settings["majors"] = config.getint("Main", "majors")
     settings["lows"] = config.getint("Main", "mediums")
     settings["mediums"] = config.getint("Main", "lows")
     settings["bets"] = config.getint("Main", "bets")
     settings["adds_top"] = config.getint("Main", "adds_top")
-    if settings["iterations"] == 0:
+    if params["iterations"] == 0:
         new_iterations = config.getint("Main", "iterations")
         if new_iterations >= 1:
-            settings["iterations"] = new_iterations
+            params["iterations"] = new_iterations
         else:
-            print("ERROR: iterations in config file has to be >= 1")
-            sys.exit(2)
-    settings["quiet"] = config.getboolean("Main", "quiet")
+            logger.error("ERROR: iterations in config file has to be >= 1")
+            sys.exit(1)
     if (settings["majors"] + settings["mediums"] + settings["lows"]) > 5:
-        print("Sum of parameters majors, mediums and lows cannot exceed 5")
+        logger.error(
+            "Sum of parameters majors, mediums and lows cannot exceed 5"
+        )
         sys.exit(2)
 
 
-def read_latest_results():
-    """Read processed results"""
-    text_contents = "{}"
-    latest_file = "latest_EJACKPOT.json"
-    latest_results = json.loads(text_contents)
-
-    if not os.path.exists(latest_file):
-        print("file does not exist: " + latest_file)
-        return latest_results
-
-    try:
-        iff = open(latest_file, "r")
-        text_contents = "[" + iff.read()[:-2] + "]"
-        iff.close()
-    except IOError as err:
-        print(
-            "Could not open / read from file : %s, error: %s"
-            % (latest_file, err)
-        )
-        iff.close()
-        return latest_results
-
-    latest_results = json.loads(text_contents)
-    print("Found %d results" % len(latest_results))
-    return latest_results
-
-
-def find_duplicates(results):
-    """See if there were any identical rounds"""
+def find_duplicates(results: list) -> None:
+    """
+    Find how many numbers in primary and adds occured in multiple draws, e.g.
+    '3:1: 166' means 166 times at least two draws had 3 primary numbers and 1
+    additional number the same
+    """
     longest_match = 0
     longest_match_infos = []
     longest_match_count = 0
     counts = {
-        "d2_0_count": 0,
-        "d2_1_count": 0,
-        "d2_2_count": 0,
-        "d3_0_count": 0,
-        "d3_1_count": 0,
-        "d3_2_count": 0,
-        "d4_0_count": 0,
-        "d4_1_count": 0,
-        "d4_2_count": 0,
+        "0:0": 0,
+        "0:1": 0,
+        "0:2": 0,
+        "1:0": 0,
+        "1:1": 0,
+        "1:2": 0,
+        "2:0": 0,
+        "2:1": 0,
+        "2:2": 0,
+        "3:0": 0,
+        "3:1": 0,
+        "3:2": 0,
+        "4:0": 0,
+        "4:1": 0,
+        "4:2": 0,
+        "5:0": 0,
+        "5:1": 0,
+        "5:2": 0,
     }
     print("Looking for duplicates")
     for idx, res in enumerate(results):
         current_match = 0
-        for idx2, res2 in enumerate(results[idx + 1 :]):
-            print("%d / %d" % (idx, idx2), end="\r")
-            if results[idx2]["numbers"] == res["numbers"]:
+        for idx2, res2 in enumerate(results[(idx + 1) :]):
+            if res2["primary"] == res["primary"]:
+                print("%d / %d" % (idx, idx2), end="\r")
                 print(
                     "\n%s %s %s / %s: %s / %s %s %s\n"
                     % (
                         res["year"],
                         res["week"],
-                        res["numbers"],
+                        res["primary"],
                         res["adds"],
-                        res2["numbers"],
+                        res2["primary"],
                         res2["adds"],
                         res2["year"],
                         res2["week"],
@@ -127,30 +103,14 @@ def find_duplicates(results):
                 current_match = 7
             else:
                 matches = compare(
-                    res["numbers"],
+                    res["primary"],
                     res["adds"],
-                    res2["numbers"],
+                    res2["primary"],
                     res2["adds"],
                 )
                 current_match = matches[0] + matches[1]
-                if matches[0] == 2 and matches[1] == 0:
-                    counts["d2_0_count"] += 1
-                if matches[0] == 2 and matches[1] == 1:
-                    counts["d2_1_count"] += 1
-                if matches[0] == 2 and matches[1] == 2:
-                    counts["d2_2_count"] += 1
-                if matches[0] == 3 and matches[1] == 0:
-                    counts["d3_0_count"] += 1
-                if matches[0] == 3 and matches[1] == 1:
-                    counts["d3_1_count"] += 1
-                if matches[0] == 3 and matches[1] == 2:
-                    counts["d3_2_count"] += 1
-                if matches[0] == 4 and matches[1] == 0:
-                    counts["d4_0_count"] += 1
-                if matches[0] == 4 and matches[1] == 1:
-                    counts["d4_1_count"] += 1
-                if matches[0] == 4 and matches[1] == 2:
-                    counts["d4_2_count"] += 1
+                match = "%d:%d" % (matches[0], matches[1])
+                counts[match] += 1
 
             if current_match > longest_match:
                 longest_match = current_match
@@ -160,9 +120,9 @@ def find_duplicates(results):
                     (
                         res["year"],
                         res["week"],
-                        res["numbers"],
+                        res["primary"],
                         res["adds"],
-                        res2["numbers"],
+                        res2["primary"],
                         res2["adds"],
                         res2["year"],
                         res2["week"],
@@ -174,30 +134,23 @@ def find_duplicates(results):
                     (
                         res["year"],
                         res["week"],
-                        res["numbers"],
+                        res["primary"],
                         res["adds"],
-                        res2["numbers"],
+                        res2["primary"],
                         res2["adds"],
                         res2["year"],
                         res2["week"],
                     )
                 )
     print(
-        "\nDone looking for duplicates. Longest match: %d (%d)"
+        "Done looking for duplicates. Longest match: %d (%d)"
         % (longest_match, longest_match_count)
     )
     if len(longest_match_infos) < 10:
         for info in longest_match_infos:
             print(info)
-    print("2:0 %d" % counts["d2_0_count"])
-    print("2:1 %d" % counts["d2_1_count"])
-    print("2:2 %d" % counts["d2_2_count"])
-    print("3:0 %d" % counts["d3_0_count"])
-    print("3:1 %d" % counts["d3_1_count"])
-    print("3:2 %d" % counts["d3_2_count"])
-    print("4:0 %d" % counts["d4_0_count"])
-    print("4:1 %d" % counts["d4_1_count"])
-    print("4:2 %d" % counts["d4_2_count"])
+    for count_key in counts:
+        logger.debug("%s %d", count_key, counts[count_key])
 
 
 def compare(lista1, lista2, listb1, listb2):
@@ -213,49 +166,21 @@ def compare(lista1, lista2, listb1, listb2):
     return (count1, count2)
 
 
-def read_from_file(filename):
-    """Save argument text to argument filename file if it does not exist"""
-    text_contents = ""
-    if not os.path.exists(filename):
-        print("file does not exist: " + filename)
-    else:
-        try:
-            iff = open(filename, "r")
-            text_contents = iff.read()
-            iff.close()
-        except IOError as err:
-            print(
-                "Could not open / read from file :"
-                + filename
-                + ", error:"
-                + err
-            )
-            iff.close()
-    return text_contents
-
-
 def get_money(mains, adds, year, week):
     """Get the match (e.g. 4 + 1) and the prize (e.g. 10350)"""
-    response_text = read_from_file("results/EJACKPOT_%s_%s.json" % (year, week))
-    if response_text != "":
-        try:
-            j = json.loads(response_text)
-            for draw in j["draws"]:
-                win_line = "%s" % mains
-                if adds > 0:
-                    win_line += "+%d" % adds
-                win_line += " oikein"
-                for prize in draw["prizeTiers"]:
-                    if win_line == prize["name"]:
-                        return "%8d.%02d" % (
-                            prize["shareAmount"] / 100,
-                            prize["shareAmount"] % 100,
-                        )
-        except:
-            print("parsing of JSON round description failed")
-            return -1
+    draw = load_draw_from_file({"year": year, "week": week})
+    win_line = "%s" % mains
+    if adds > 0:
+        win_line += "+%d" % adds
+    win_line += " oikein"
+    for prize in draw["scores"]:
+        if win_line == prize["name"]:
+            return "%8d.%02d" % (
+                prize["shareAmount"] / 100,
+                prize["shareAmount"] % 100,
+            )
     print("WTF: %d/%d/%s/%s" % (mains, adds, year, week))
-    return "       -.--"
+    return "0"
 
 
 def skip_repetition(results, mains, adds):
@@ -263,7 +188,7 @@ def skip_repetition(results, mains, adds):
     matches = (0, 0)
     for idx in range(0, len(results)):
         matches = compare(
-            results[idx]["numbers"], results[idx]["adds"], mains, adds
+            results[idx]["primary"], results[idx]["adds"], mains, adds
         )
     if (
         matches[0] > 3
@@ -292,10 +217,10 @@ def gen_random():
     return (num1, num2)
 
 
-def gen_stat(idx, data):
+def gen_stat(idx, params):
     """for current stats generate projection"""
-    settings = data["settings"]
-    results = data["results"]
+    settings = params["settings"]
+    results = params["results"]
     stat_debug = 0
     num1 = []
     num2 = []
@@ -354,15 +279,12 @@ def gen_stat(idx, data):
     return (num1, num2)
 
 
-def project(data):
+def project(params):
     """ Randomize and see what happens """
-    settings = data["settings"]
-    results = data["results"]
-    if settings["iterations"] > 1:
-        settings["quiet"] = True
+    results = params["results"]
     rate_avg = 0
     # how many times go through all results (simulations number)
-    for _ in range(0, settings["iterations"]):
+    for _ in range(0, params["iterations"]):
         wins = 0
         income = 0
         rounds = 0
@@ -378,7 +300,7 @@ def project(data):
                 # better
                 skip = True
                 while skip:
-                    (num1, num2) = gen_stat(idx, data)
+                    (num1, num2) = gen_stat(idx, params)
                     skip = skip_repetition(results, num1, num2)
                     if skip:
                         skipped += 1
@@ -386,7 +308,7 @@ def project(data):
                 (nums, adds) = compare(
                     num1,
                     num2,
-                    results[idx + 1]["numbers"],
+                    results[idx + 1]["primary"],
                     results[idx + 1]["adds"],
                 )
                 if nums >= 2:
@@ -396,7 +318,7 @@ def project(data):
                     w_week = results[idx + 1]["week"]
                     w_money = get_money(nums, adds, w_year, w_week)
                     income += float(w_money)
-                    if not settings["quiet"]:
+                    if not params["quiet"]:
                         print(
                             "Win %d-%d %s/%2s : %20s %7s / %20s %7s %s"
                             % (
@@ -406,7 +328,7 @@ def project(data):
                                 w_week,
                                 num1,
                                 num2,
-                                results[idx + 1]["numbers"],
+                                results[idx + 1]["primary"],
                                 results[idx + 1]["adds"],
                                 w_money,
                             )
@@ -417,28 +339,46 @@ def project(data):
             % (wins, rounds, wins / rounds, rounds * 2, income, skipped)
         )
         rate_avg += wins / rounds
-    print("Rate_avg:        %3.4f" % (rate_avg / settings["iterations"]))
+    print("Rate_avg:        %3.4f" % (rate_avg / params["iterations"]))
 
 
-def stat_relative(data):
-    """Assuming that stats were generated, show how popular numbers are drawn"""
+def stat_relative(params):
+    """
+    Assuming that stats were generated, show how popular numbers are drawn
+    """
     print("relative_stats:")
-    for idx in range(10, len(data["results"])):
+    for idx in range(10, len(params["results"])):
         relative_stats = []
         sorted_stat = numpy.argsort(
-            data["results"][idx - 1]["stats_main"]
+            params["results"][idx - 1]["stats_main"]
         ).tolist()
         # optionally - sort
-        for num in data["results"][idx]["numbers"]:
+        for num in params["results"][idx]["primary"]:
             relative_stats.append(sorted_stat.index(num))
         relative_stats.sort()
         print(relative_stats)
 
 
-def process(data):
+def process(params):
     """Main logic"""
-    print(data["settings"])
-    data["results"] = read_latest_results()
+    params.update(
+        {
+            "results": [],
+            "settings": {
+                "adds_top": 5,
+                "majors": 2,
+                "mediums": 2,
+                "lows": 1,
+                "bets": 1,
+                "config_file": "",
+                "quiet": True,
+            },
+        }
+    )
+
+    parse_config(params)
+
+    params["results"] = load_latest_file(params)
     stats_main = []
     stats_adds = []
     for _ in range(0, 11):
@@ -446,37 +386,14 @@ def process(data):
     for _ in range(0, 51):
         stats_main.append(0)
     # populate stats per round
-    for result in data["results"]:
-        for num in result["numbers"]:
+    for result in params["results"]:
+        for num in result["primary"]:
             stats_main[num] += 1
         result["stats_main"] = stats_main.copy()
         for num in result["adds"]:
             stats_adds[num] += 1
         # print(stats_adds)
         result["stats_adds"] = stats_adds.copy()
-    # find_duplicates(data['results'])
-    # project(data)
-    stat_relative(data)
-    sys.exit(0)
-
-
-def starter(arguments):
-    """Validate arguments and process results"""
-
-    data = {
-        "results": [],
-        "settings": {
-            "adds_top": 5,
-            "majors": 2,
-            "mediums": 2,
-            "lows": 1,
-            "bets": 1,
-            "iterations": 0,
-            "config_file": "",
-            "quiet": True,
-        },
-    }
-
-    parse_arguments(arguments, data["settings"])
-    parse_config(data["settings"])
-    process(data)
+    # find_duplicates(params["results"])
+    project(params)
+    # stat_relative(params)
