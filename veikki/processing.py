@@ -186,16 +186,14 @@ def get_money(mains, adds, year, week):
 def skip_repetition(results, mains, adds):
     """Do not allow more than three main numbers with any previous result"""
     matches = (0, 0)
-    for idx in range(0, len(results)):
-        matches = compare(
-            results[idx]["primary"], results[idx]["adds"], mains, adds
-        )
-    if (
-        matches[0] > 3
-        or (matches[0] == 3 and matches[1] > 0)
-        or (matches[0] == 2 and matches[1] == 2)
-    ):
-        return True
+    for res in results:
+        matches = compare(res["primary"], res["adds"], mains, adds)
+        if (
+            matches[0] > 3
+            or (matches[0] == 3 and matches[1] > 0)
+            or (matches[0] == 2 and matches[1] == 2)
+        ):
+            return True
 
     return False
 
@@ -217,29 +215,26 @@ def gen_random():
     return (num1, num2)
 
 
-def gen_stat(idx, params):
+def gen_stat(idx, params):  # pylint: disable=too-many-locals
     """for current stats generate projection"""
     settings = params["settings"]
     results = params["results"]
-    stat_debug = 0
     num1 = []
     num2 = []
-    # here be dragons
+
     sorted_stat = numpy.argsort(results[idx]["stats_main"])
-    if stat_debug:
+    if params["quiet"]:
         print(
             "stats_main(%d): %s\nsorted_stat: %s"
             % (len(sorted_stat), results[idx]["stats_main"], sorted_stat)
         )
 
     tops = sorted_stat[25:51]
-    if stat_debug:
-        print("tops:%s" % tops)
     mediums = sorted_stat[10:25]
-    if stat_debug:
-        print("mediums:%s" % mediums)
     lows = sorted_stat[1:10]
-    if stat_debug:
+    if params["quiet"]:
+        print("tops:%s" % tops)
+        print("mediums:%s" % mediums)
         print("lows:%s" % lows)
 
     if len(tops) + len(mediums) + len(lows) != 50:
@@ -264,7 +259,7 @@ def gen_stat(idx, params):
 
     stat_adds_sorted = numpy.argsort(results[idx]["stats_adds"])
     adds_top = stat_adds_sorted[-(settings["adds_top"]) :]
-    if stat_debug:
+    if params["quiet"]:
         print(
             "idx %d, stat_adds_sorted: %s, stats_adds: %s"
             % (idx, stat_adds_sorted, results[idx]["stats_adds"])
@@ -279,7 +274,7 @@ def gen_stat(idx, params):
     return (num1, num2)
 
 
-def project(params):
+def project(params):  # pylint: disable=too-many-locals
     """ Randomize and see what happens """
     results = params["results"]
     rate_avg = 0
@@ -359,7 +354,7 @@ def stat_relative(params):
         print(relative_stats)
 
 
-def process(params):
+def do_process(params):
     """Main logic"""
     params.update(
         {
