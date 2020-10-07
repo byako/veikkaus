@@ -3,6 +3,7 @@ common functions for modules
 """
 from copy import deepcopy
 import json
+import datetime
 import os
 import time
 import logging
@@ -59,7 +60,7 @@ def print_draw(parsed_draw: dict) -> None:
         parsed_draw["year"],
         parsed_draw["week"],
         parsed_draw["date"],
-        parsed_draw["jackpot_value"],
+        f'{parsed_draw["jackpot_value"]/100:,}',
     )
     logger.info(
         "  %s / %s",
@@ -96,7 +97,9 @@ def parse_draw(json_full_draw) -> dict:
     draw_time = time.localtime(full_draw["drawTime"] / 1000)
     draw["id"] = full_draw["id"]
     draw["year"] = time.strftime("%Y", draw_time)
-    draw["week"] = str(int(time.strftime("%W", draw_time)) + 1)
+    draw["week"] = datetime.datetime.fromtimestamp(
+        full_draw["drawTime"] / 1000
+    ).isocalendar()[1]
     draw["date"] = time.strftime("%d.%m", draw_time)
     draw["primary"] = [int(x) for x in full_draw["results"][0]["primary"]]
     draw["adds"] = [int(x) for x in full_draw["results"][0]["secondary"]]
@@ -117,11 +120,15 @@ def load_draw_from_file(params: dict) -> dict:
     Load from file previously fetched draw result
     Returns parsed draw result
     """
-    logger.debug("Loading results for %s / %s", params["year"], params["week"])
-
     filename = f'results/ejackpot_{params["year"]}_{params["week"]}.json'
-    with open(filename, "r") as json_file:
-        return parse_draw(json.load(json_file))
+    if not params["quiet"]:
+        logger.debug("Loading result file %s", filename)
+    if os.path.isfile(filename):
+        with open(filename, "r") as json_file:
+            return parse_draw(json.load(json_file))
+    else:
+        logger.error("Cannot find file %s", filename)
+    return None
 
 
 def load_and_print_draw(params: dict) -> None:

@@ -6,6 +6,7 @@ import logging
 import sys
 import configparser
 from random import randint
+import multiprocessing
 import numpy
 
 from handies import load_draw_from_file, load_latest_file
@@ -168,9 +169,12 @@ def compare(lista1, lista2, listb1, listb2):
 
 def get_money(mains, adds, year, week):
     """Get the match (e.g. 4 + 1) and the prize (e.g. 10350)"""
-    draw = load_draw_from_file({"year": year, "week": week})
+    draw = load_draw_from_file({"year": year, "week": week, "quiet": True})
+    if not draw:
+        return 0
     win_line = "%s" % mains
-    if adds > 0:
+    # since 2017/04 '+0' is added to prize name
+    if adds != 0 or int(year) > 2017 or (int(year) == 2017 and int(week) > 3):
         win_line += "+%d" % adds
     win_line += " oikein"
     for prize in draw["scores"]:
@@ -179,7 +183,7 @@ def get_money(mains, adds, year, week):
                 prize["shareAmount"] / 100,
                 prize["shareAmount"] % 100,
             )
-    print("WTF: %d/%d/%s/%s" % (mains, adds, year, week))
+    logger.debug("WTF: %d/%d/%s/%s", mains, adds, year, week)
     return "0"
 
 
@@ -223,7 +227,7 @@ def gen_stat(idx, params):  # pylint: disable=too-many-locals
     num2 = []
 
     sorted_stat = numpy.argsort(results[idx]["stats_main"])
-    if params["quiet"]:
+    if not params["quiet"]:
         print(
             "stats_main(%d): %s\nsorted_stat: %s"
             % (len(sorted_stat), results[idx]["stats_main"], sorted_stat)
@@ -232,7 +236,7 @@ def gen_stat(idx, params):  # pylint: disable=too-many-locals
     tops = sorted_stat[25:51]
     mediums = sorted_stat[10:25]
     lows = sorted_stat[1:10]
-    if params["quiet"]:
+    if not params["quiet"]:
         print("tops:%s" % tops)
         print("mediums:%s" % mediums)
         print("lows:%s" % lows)
@@ -259,7 +263,7 @@ def gen_stat(idx, params):  # pylint: disable=too-many-locals
 
     stat_adds_sorted = numpy.argsort(results[idx]["stats_adds"])
     adds_top = stat_adds_sorted[-(settings["adds_top"]) :]
-    if params["quiet"]:
+    if not params["quiet"]:
         print(
             "idx %d, stat_adds_sorted: %s, stats_adds: %s"
             % (idx, stat_adds_sorted, results[idx]["stats_adds"])
@@ -313,7 +317,7 @@ def project(params):  # pylint: disable=too-many-locals
                     w_week = results[idx + 1]["week"]
                     w_money = get_money(nums, adds, w_year, w_week)
                     income += float(w_money)
-                    if not params["quiet"]:
+                    if float(w_money) > 50:
                         print(
                             "Win %d-%d %s/%2s : %20s %7s / %20s %7s %s"
                             % (
@@ -330,7 +334,7 @@ def project(params):  # pylint: disable=too-many-locals
                         )
                     wins += 1
         print(
-            "Rate: %3d / %d (%3.4f), - / +: %d / %7.2f, skipped %d"
+            "Wins: %3d / Rounds %d (Rate %3.4f), - / +: %d / %7.2f, skipped %d"
             % (wins, rounds, wins / rounds, rounds * 2, income, skipped)
         )
         rate_avg += wins / rounds

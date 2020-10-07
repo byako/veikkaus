@@ -2,6 +2,7 @@
 Generate stat graphs and save to files
 """
 import json
+from multiprocessing import Pool
 import os
 import logging
 from matplotlib import pyplot
@@ -13,9 +14,13 @@ logger.setLevel(logging.DEBUG)
 CONFIG = {"numbersLimit": 50, "additionalLimit": 10}
 
 
-def plot_one(primary: list, average: int, filename: str):
+def plot_one(p_tuple):
     """ test plotting into file """
-
+    (primary, average, filename) = p_tuple
+    if os.path.isfile(filename):
+        logger.debug("skipping %s: file exists", filename)
+        return
+    logger.debug("plotting %s", filename)
     avg_list = [average] * CONFIG["numbersLimit"]
     nums = [idx for idx in range(1, CONFIG["numbersLimit"] + 1)]
 
@@ -52,6 +57,7 @@ def plot_all(params):
         results = json.load(latest_file)
         logger.debug("results found: %d", len(results))
 
+    to_plot = []
     for draw in results:
         for prim in draw["primary"]:
             common_stats[prim - 1] += 1
@@ -62,6 +68,6 @@ def plot_all(params):
 
         filename = f'png/ejackpot_{draw["year"]}_{draw["week"]}.png'
         average_stats = sum(primary_stats) / CONFIG["numbersLimit"]
-        if not os.path.isfile(filename):
-            logger.debug("plotting %s %s", draw["year"], draw["week"])
-            plot_one(primary_stats, average_stats, filename)
+        to_plot.append((primary_stats, average_stats, filename))
+    with Pool(2) as p:
+        p.map(plot_one, to_plot)

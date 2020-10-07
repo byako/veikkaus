@@ -51,13 +51,14 @@ def refetch_all(params: dict) -> None:
     """
     now = datetime.now()
     w52 = {}
-    for idx_year in range(2020, (now.year + 1)):
+    for idx_year in range(2012, (now.year + 1)):
         params["year"] = idx_year
         week_range_start = 1
         week_range_limit = 54
 
         if params["year"] == now.year:
-            week_range_limit = now.isocalendar()[1]  # do not fetch current week
+            # do not fetch current week
+            week_range_limit = now.isocalendar()[1]
 
         if params["year"] == 2012:
             week_range_start = 12
@@ -76,3 +77,4 @@ def refetch_all(params: dict) -> None:
                     filepath = os.path.join("results", filename)
                     logger.debug("No w53 result, deleting file %s", filepath)
                     os.remove(filepath)
+    regenerate_latest(params)  # in case some results got deleted
