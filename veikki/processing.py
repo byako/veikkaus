@@ -278,66 +278,76 @@ def gen_stat(idx, params):  # pylint: disable=too-many-locals
     return (num1, num2)
 
 
-def project(params):  # pylint: disable=too-many-locals
+def project(params):
+    """ parallel project """
+    cpus = params["iterations"]
+    if cpus > 1:
+        logger.debug("Running in parallel %d processes", cpus)
+    # how many times go through all results (simulations number)
+    with multiprocessing.Pool(multiprocessing.cpu_count()) as plot_pool:
+        plot_pool.map(project_once, [params] * params["iterations"])
+
+
+def project_once(params):  # pylint: disable=too-many-locals
     """ Randomize and see what happens """
     results = params["results"]
     rate_avg = 0
-    # how many times go through all results (simulations number)
-    for _ in range(0, params["iterations"]):
-        wins = 0
-        income = 0
-        rounds = 0
-        skipped = 0
-        if len(results) == 0:
-            print("ERROR: no results")
-            sys.exit(4)
-        for idx in range(0, len(results) - 1):
-            for _ in range(0, 1):
-                rounds += 1
-                # least accurate:
-                # (num1, num2) = gen_random()
-                # better
-                skip = True
-                while skip:
-                    (num1, num2) = gen_stat(idx, params)
-                    skip = skip_repetition(results, num1, num2)
-                    if skip:
-                        skipped += 1
 
-                (nums, adds) = compare(
-                    num1,
-                    num2,
-                    results[idx + 1]["primary"],
-                    results[idx + 1]["adds"],
-                )
-                if nums >= 2:
-                    if nums == 2 and adds == 0:
-                        continue
-                    w_year = results[idx + 1]["year"]
-                    w_week = results[idx + 1]["week"]
-                    w_money = get_money(nums, adds, w_year, w_week)
-                    income += float(w_money)
-                    if float(w_money) > 50:
-                        print(
-                            "Win %d-%d %s/%2s : %20s %7s / %20s %7s %s"
-                            % (
-                                nums,
-                                adds,
-                                w_year,
-                                w_week,
-                                num1,
-                                num2,
-                                results[idx + 1]["primary"],
-                                results[idx + 1]["adds"],
-                                w_money,
-                            )
+    wins = 0
+    income = 0
+    rounds = 0
+    skipped = 0
+    if len(results) == 0:
+        print("ERROR: no results")
+        sys.exit(4)
+    for idx in range(0, len(results) - 1):
+        for _ in range(0, 1):
+            rounds += 1
+            # least accurate:
+            # (num1, num2) = gen_random()
+            # better
+            skip = True
+            while skip:
+                (num1, num2) = gen_stat(idx, params)
+                skip = skip_repetition(results, num1, num2)
+                if skip:
+                    skipped += 1
+
+            (nums, adds) = compare(
+                num1,
+                num2,
+                results[idx + 1]["primary"],
+                results[idx + 1]["adds"],
+            )
+            if nums >= 2:
+                if nums == 2 and adds == 0:
+                    continue
+                w_year = results[idx + 1]["year"]
+                w_week = results[idx + 1]["week"]
+                w_money = get_money(nums, adds, w_year, w_week)
+                income += float(w_money)
+                if float(w_money) > 50:
+                    print(
+                        "Win %d-%d %s/%2s : %20s %7s / %20s %7s %s"
+                        % (
+                            nums,
+                            adds,
+                            w_year,
+                            w_week,
+                            num1,
+                            num2,
+                            results[idx + 1]["primary"],
+                            results[idx + 1]["adds"],
+                            w_money,
                         )
-                    wins += 1
-        print(
-            "Wins: %3d / Rounds %d (Rate %3.4f), - / +: %d / %7.2f, skipped %d"
-            % (wins, rounds, wins / rounds, rounds * 2, income, skipped)
-        )
-        rate_avg += wins / rounds
+                    )
+                wins += 1
+    print(
+        "Wins: %3d / Rounds %d (Rate %3.4f), - / +: %d / %7.2f, skipped %d"
+        % (wins, rounds, wins / rounds, rounds * 2, income, skipped)
+    )
+    rate_avg += wins / rounds
+    # return rate avg
     print("Rate_avg:        %3.4f" % (rate_avg / params["iterations"]))
 
 

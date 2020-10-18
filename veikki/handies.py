@@ -5,7 +5,6 @@ from copy import deepcopy
 import json
 import datetime
 import os
-import time
 import logging
 
 logger = logging.getLogger("veikkilogger")
@@ -94,13 +93,11 @@ def parse_draw(json_full_draw) -> dict:
         logger.error(err_msg)
         raise ValueError(err_msg)
 
-    draw_time = time.localtime(full_draw["drawTime"] / 1000)
+    draw_date = datetime.datetime.fromtimestamp(full_draw["drawTime"] / 1000)
     draw["id"] = full_draw["id"]
-    draw["year"] = time.strftime("%Y", draw_time)
-    draw["week"] = datetime.datetime.fromtimestamp(
-        full_draw["drawTime"] / 1000
-    ).isocalendar()[1]
-    draw["date"] = time.strftime("%d.%m", draw_time)
+    draw["year"] = draw_date.isocalendar()[0]
+    draw["week"] = draw_date.isocalendar()[1]
+    draw["date"] = f"{draw_date.year}.{draw_date.month}.{draw_date.day}"
     draw["primary"] = [int(x) for x in full_draw["results"][0]["primary"]]
     draw["adds"] = [int(x) for x in full_draw["results"][0]["secondary"]]
     draw["jackpot_value"] = (

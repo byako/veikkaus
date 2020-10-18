@@ -35,8 +35,15 @@ def regenerate_latest(params) -> None:
         filepath = os.path.join("results", filename)
         logger.debug("%s", filepath)
         with open(filepath) as draw_file:
-            jsdraw = json.load(draw_file)
-            results.append(parse_draw(jsdraw))
+            draw = parse_draw(json.load(draw_file))
+            if f'ejackpot_{draw["year"]}_{draw["week"]}.json' != filename:
+                logger.error(
+                    "filename doesn't match content %s: %s / %s",
+                    filename,
+                    draw["year"],
+                    draw["week"],
+                )
+            results.append(draw)
 
     with open(params["latest_file"], "w") as latest_file:
         logger.debug("Saving new %s", params["latest_file"])
