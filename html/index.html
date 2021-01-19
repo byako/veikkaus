@@ -14,26 +14,25 @@
 <body class="bg-dark text-white">
     <div class="container-fluid">
         <div class="row" style="background-color:#333;color:#fff;">
-            <div class="col-md-3">
-                <div class="dropdown">
-                    <button id="switchGameButton" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">ejackpot
-                    <span class="caret"></span></button>
-                    <ul class="dropdown-menu">
-                        <li><a href="javascript:switchGame('ejackpot');">ejackpot</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-3">
+            <div class="col-md-1">
                 <input id="showFieldsCheckbox" type="checkbox" name="showFields" value="true" checked onchange="showFieldsChanged(this);" />
-                <label for="showFields">Show fields</label>
+                <label for="showFields">Fields</label>
             </div>
-            <div class="col-md-3" id="historyLengthDiv" style="color:#f00">
-                <span>Shown last results
-                    <input type="number" id="histLengthInput" style="width:50px" value="52" onchange="updateHistSize()"/>
+            <div class="col-md-1">
+                <input id="showAddsPlotCheckbox" type="checkbox" name="showAddsPlot" value="true" checked onchange="showAddsPlotChanged(this);" />
+                <label for="showAddsPlot">Adds plot</label>
+            </div>
+            <div class="col-md-1">
+                <input id="showParsedResultCheckbox" type="checkbox" name="showParsedResult" value="true" checked onchange="showParsedResultChanged(this);" />
+                <label for="showParsedResult">Parsed result</label>
+            </div>
+            <div class="col-md-3" id="historyLengthDiv">
+                <span>Results
+                    <input type="number" id="histLengthInput" style="color:#000; width:50px" value="52" onchange="updateHistSize()"/>
                 </span>
             </div>
             <div class="col-md-3" id="checkDiv">
-                <input type="text" name="combcheck" id="combInput" value="" />
+                <input type="text" name="combcheck" id="combInput" value="" style="color: #000"/>
                 <button id="combCheckButton" class="btn btn-default btn-sm" type="button" onclick="checkCombination();">Check</button>
             </div>
         </div>

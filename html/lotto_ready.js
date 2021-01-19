@@ -61,11 +61,6 @@ function getCookie(cname) {
 function loadCookies() {
     var mcookie = getCookie("histLength");
     if (mcookie != "") histLength = parseInt(mcookie);
-    mcookie = getCookie("game");
-    if (mcookie != "") {
-        game = String(mcookie);
-        $("#switchGameButton").html(game + "<span class='caret'></span>");
-    }
     mcookie = getCookie("showFields");
     if (mcookie != "") {
         showFields = parseInt(mcookie);

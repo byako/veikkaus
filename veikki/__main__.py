@@ -11,7 +11,7 @@ import sys
 from handies import load_and_print_draw, print_latest_result_date
 from fetch_results import get_draw
 from plot_results import plot_all
-from processing import do_process
+from processing import do_process, process_optimize
 from regenerate import refetch_all, regenerate_latest
 
 
@@ -50,6 +50,7 @@ commands = {
     "parse": load_and_print_draw,
     "plot": plot_all,
     "process": do_process,
+    "optimize": process_optimize,
     "refetch": refetch_all,
     "regen": regenerate_latest,
 }
@@ -108,7 +109,7 @@ if params["config"] and not os.path.isfile(params["config"]):
 
 sanitize(params)
 
-logger.debug("settings:")
+logger.debug("parameters:")
 for params_key in params:
     logger.debug("\t%s: %s", params_key, params[params_key])
 

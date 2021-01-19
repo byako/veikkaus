@@ -31,10 +31,10 @@ var results = [];
 var initialized = false; // used in first highlighting
 var logsList = [];
 
-// d1 : total times a number has appeared
+// d1 :times a number has appeared as primary
 var d1 = [];
 
-// d2: number times a number has appeared as an additional
+// d2: times a number has appeared as an additional
 var d2 = [];
 // d3: the average number from d1
 var d3 = [ [1,0], [2,0] ];
@@ -524,7 +524,6 @@ function processResults() {
         }
         for (var j=0; j < results[i].adds.length; j++) {
             var addit = results[i].adds[j];
-            d1[addit-1][1] = d1[addit-1][1] + 1;
             d2[addit-1][1] = d2[addit-1][1] + 1;
         }
         d6.push(d1.slice(0));

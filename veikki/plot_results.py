@@ -1,6 +1,7 @@
 """
 Generate stat graphs and save to files
 """
+from copy import deepcopy
 import json
 import multiprocessing
 import os
@@ -67,6 +68,6 @@ def plot_all(params):
 
         filename = f'png/ejackpot_{draw["year"]}_{draw["week"]}.png'
         average_stats = sum(primary_stats) / CONFIG["numbersLimit"]
-        to_plot.append((primary_stats, average_stats, filename))
+        to_plot.append((deepcopy(primary_stats), average_stats, filename))
     with multiprocessing.Pool(multiprocessing.cpu_count()) as plot_pool:
         plot_pool.map(plot_one, to_plot)

@@ -37,6 +37,9 @@ def parse_config(params: dict) -> None:
     settings["majors"] = config.getint("Main", "majors")
     settings["lows"] = config.getint("Main", "mediums")
     settings["mediums"] = config.getint("Main", "lows")
+    settings["majors_length"] = config.getint("Main", "majors_length")
+    settings["lows_length"] = config.getint("Main", "mediums_length")
+    settings["mediums_length"] = config.getint("Main", "lows_length")
     settings["bets"] = config.getint("Main", "bets")
     settings["adds_top"] = config.getint("Main", "adds_top")
     if params["iterations"] == 0:
@@ -51,6 +54,10 @@ def parse_config(params: dict) -> None:
             "Sum of parameters majors, mediums and lows cannot exceed 5"
         )
         sys.exit(2)
+
+    logger.debug("settings:")
+    for params_key in params["settings"]:
+        logger.debug("\t%s: %s", params_key, params["settings"][params_key])
 
 
 def find_duplicates(results: list) -> None:
@@ -188,7 +195,9 @@ def get_money(mains, adds, year, week):
 
 
 def skip_repetition(results, mains, adds):
-    """Do not allow more than three main numbers with any previous result"""
+    """
+    Do not allow more than three main numbers with any previous result
+    """
     matches = (0, 0)
     for res in results:
         matches = compare(res["primary"], res["adds"], mains, adds)
@@ -233,9 +242,13 @@ def gen_stat(idx, params):  # pylint: disable=too-many-locals
             % (len(sorted_stat), results[idx]["stats_main"], sorted_stat)
         )
 
-    tops = sorted_stat[25:51]
-    mediums = sorted_stat[10:25]
-    lows = sorted_stat[1:10]
+    tops = sorted_stat[(50 - params["settings"]["majors_length"]) : 51]
+    mediums = sorted_stat[
+        params["settings"]["lows_length"] : (
+            50 - params["settings"]["majors_length"]
+        )
+    ]
+    lows = sorted_stat[1 : params["settings"]["lows_length"]]
     if not params["quiet"]:
         print("tops:%s" % tops)
         print("mediums:%s" % mediums)
@@ -281,8 +294,6 @@ def gen_stat(idx, params):  # pylint: disable=too-many-locals
 def project(params):
     """ parallel project """
     cpus = params["iterations"]
-    if cpus > 1:
-        logger.debug("Running in parallel %d processes", cpus)
     # how many times go through all results (simulations number)
     with multiprocessing.Pool(multiprocessing.cpu_count()) as plot_pool:
         plot_pool.map(project_once, [params] * params["iterations"])
@@ -301,7 +312,7 @@ def project_once(params):  # pylint: disable=too-many-locals
         print("ERROR: no results")
         sys.exit(4)
     for idx in range(0, len(results) - 1):
-        for _ in range(0, 1):
+        for _ in range(0, params["settings"]["bets"]):
             rounds += 1
             # least accurate:
             # (num1, num2) = gen_random()
@@ -319,8 +330,8 @@ def project_once(params):  # pylint: disable=too-many-locals
                 results[idx + 1]["primary"],
                 results[idx + 1]["adds"],
             )
-            if nums >= 2:
-                if nums == 2 and adds == 0:
+            if nums >= 2:  # try matched 2 or more primary, get prize
+                if nums == 2 and adds == 0:  # 2+0 wins nothing, skip
                     continue
                 w_year = results[idx + 1]["year"]
                 w_week = results[idx + 1]["week"]
@@ -342,13 +353,13 @@ def project_once(params):  # pylint: disable=too-many-locals
                         )
                     )
                 wins += 1
-    print(
-        "Wins: %3d / Rounds %d (Rate %3.4f), - / +: %d / %7.2f, skipped %d"
-        % (wins, rounds, wins / rounds, rounds * 2, income, skipped)
-    )
+
     rate_avg += wins / rounds
-    # return rate avg
-    print("Rate_avg:        %3.4f" % (rate_avg / params["iterations"]))
+    print(
+        "Wins: %3d / Rounds %4d (Rate %3.4f), - / +: %4d / %7.2f, "
+        "skipped %04d | rate: %3.4f"
+        % (wins, rounds, wins / rounds, rounds * 2, income, skipped, rate_avg)
+    )
 
 
 def stat_relative(params):
@@ -368,8 +379,10 @@ def stat_relative(params):
         print(relative_stats)
 
 
-def do_process(params):
-    """Main logic"""
+def _prepare_to_process(params):
+    """
+    Populate config, results, stats per game round
+    """
     params.update(
         {
             "results": [],
@@ -379,7 +392,6 @@ def do_process(params):
                 "mediums": 2,
                 "lows": 1,
                 "bets": 1,
-                "config_file": "",
                 "quiet": True,
             },
         }
@@ -403,6 +415,33 @@ def do_process(params):
             stats_adds[num] += 1
         # print(stats_adds)
         result["stats_adds"] = stats_adds.copy()
+
+
+def do_process(params):
+    """
+    Setup and call processing
+    """
+    _prepare_to_process(params)
     # find_duplicates(params["results"])
     project(params)
     # stat_relative(params)
+
+
+def process_optimize(params):
+    """
+    Bruteforce parameters to increase winnig rate
+    """
+    _prepare_to_process(params)
+    for majors in range(0, 6):
+        for mediums in range(0, 6 - majors):
+            for lows in range(0, 6 - majors - mediums):
+                params["settings"].update(
+                    {
+                        "majors": majors,
+                        "mediums": mediums,
+                        "lows": lows,
+                    }
+                )
+                print()
+                print(params["settings"])
+                project(params)
