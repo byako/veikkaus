@@ -9,10 +9,15 @@ from random import randint
 import multiprocessing
 import numpy
 
-from handies import load_draw_from_file, load_latest_file
+from matplotlib import pyplot
+from matplotlib.ticker import AutoMinorLocator, MultipleLocator
+
+from veikki.handies import load_draw_from_file, load_latest_file
 
 logger = logging.getLogger("veikkilogger")
 logger.setLevel(logging.DEBUG)
+
+DEFAULT_PLOT_PATH = "/tmp/veikki_relastats.png"
 
 
 def print_usage():
@@ -293,10 +298,10 @@ def gen_stat(idx, params):  # pylint: disable=too-many-locals
 
 def project(params):
     """ parallel project """
-    cpus = params["iterations"]
+    # cpus = params["iterations"]  # to limit number
     # how many times go through all results (simulations number)
-    with multiprocessing.Pool(multiprocessing.cpu_count()) as plot_pool:
-        plot_pool.map(project_once, [params] * params["iterations"])
+    with multiprocessing.Pool(multiprocessing.cpu_count()) as project_pool:
+        project_pool.map(project_once, [params] * params["iterations"])
 
 
 def project_once(params):  # pylint: disable=too-many-locals
@@ -362,21 +367,61 @@ def project_once(params):  # pylint: disable=too-many-locals
     )
 
 
+def plot_relative_stats(relative_stats, filename=DEFAULT_PLOT_PATH):
+    """ test plotting into file """
+    logger.debug("plotting relative stats %s", filename)
+    nums = list(range(10, 10 + len(relative_stats[0])))
+
+    fig, axes = pyplot.subplots()
+    fig.set_size_inches(64, 10)
+    axes.yaxis.set_major_locator(MultipleLocator(5))
+    axes.yaxis.set_minor_locator(AutoMinorLocator(5))
+    axes.xaxis.set_major_locator(MultipleLocator(5))
+    axes.xaxis.set_minor_locator(AutoMinorLocator(5))
+
+    for idx in range(5):
+        axes.plot(nums, relative_stats[idx])
+
+    axes.legend()
+    axes.grid(which="both")
+    axes.grid(which="minor", alpha=0.2)
+    axes.grid(which="major", alpha=0.5)
+    # axes.set_xlim(1, CONFIG["numbersLimit"])
+    # axes.set_facecolor("xkcd:grey")
+    fig.tight_layout()
+
+    fig.savefig(filename, dpi=100)
+    pyplot.close(fig)
+
+
 def stat_relative(params):
     """
     Assuming that stats were generated, show how popular numbers are drawn
     """
+    # from_max = []
+    # from_min = []
+    # from_med = []
+    relastat = [[], [], [], [], []]
     print("relative_stats:")
     for idx in range(10, len(params["results"])):
+        # numpy.argsort returnes indexes of min to max elements
+        # get index of the number - it's rank in frequencies of appearances
+        # the higher the index - the more oftem the element had appeared
         relative_stats = []
         sorted_stat = numpy.argsort(
             params["results"][idx - 1]["stats_main"]
         ).tolist()
-        # optionally - sort
         for num in params["results"][idx]["primary"]:
             relative_stats.append(sorted_stat.index(num))
         relative_stats.sort()
-        print(relative_stats)
+        for el_idx, elem in enumerate(relative_stats):
+            relastat[el_idx].append(elem)
+
+        # rmax = max(params["results"][idx - 1]["stats_main"])
+        # rmin = min(params["results"][idx - 1]["stats_main"])
+        # avg = (rmax + rmin) // 2
+
+    plot_relative_stats(relastat)
 
 
 def _prepare_to_process(params):
@@ -423,8 +468,8 @@ def do_process(params):
     """
     _prepare_to_process(params)
     # find_duplicates(params["results"])
-    project(params)
-    # stat_relative(params)
+    # project(params)
+    stat_relative(params)
 
 
 def process_optimize(params):

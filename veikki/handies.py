@@ -105,7 +105,9 @@ def parse_draw(json_full_draw) -> dict:
     )
     draw["scores"] = full_draw["prizeTiers"]
     top_tier = [
-        tier for tier in full_draw["prizeTiers"] if tier["name"] == "5+2 oikein"
+        tier
+        for tier in full_draw["prizeTiers"]
+        if tier["name"] == "5+2 oikein"
     ][0]
     if top_tier["shareCount"] > 0:
         draw["jackpot_won"] = True

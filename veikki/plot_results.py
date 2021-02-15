@@ -19,10 +19,11 @@ def plot_one(p_tuple):
     """ test plotting into file """
     (primary, average, filename) = p_tuple
     if os.path.isfile(filename):
+        print(f"ERROR: plot_one: {filename} exists, cannot plot")
         return
     logger.debug("plotting %s", filename)
     avg_list = [average] * CONFIG["numbersLimit"]
-    nums = [idx for idx in range(1, CONFIG["numbersLimit"] + 1)]
+    nums = list(range(1, CONFIG["numbersLimit"] + 1))
 
     fig, axes = pyplot.subplots()
     fig.set_size_inches(13, 2.5)

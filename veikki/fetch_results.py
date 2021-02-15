@@ -7,7 +7,7 @@ import os.path
 
 import requests
 
-from handies import parse_draw
+from veikki.handies import parse_draw
 
 
 logger = logging.getLogger("veikkilogger")

@@ -9,8 +9,8 @@ import logging
 import os
 import subprocess
 
-from fetch_results import get_draw
-from handies import parse_draw
+from veikki.fetch_results import get_draw
+from veikki.handies import parse_draw
 
 
 logger = logging.getLogger("veikkilogger")
