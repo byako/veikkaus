@@ -283,9 +283,7 @@ function checkCombination() {
     }
 }
 
-/*
- * here we handle clicking on the old results : highlighting it, etc.
- */
+/* handle clicking on the old results : highlighting it, etc. */
 function fieldsShowRound(roundNumber) {
     if (roundNumber == selectedRound) {
         if (initialized === false) {
@@ -320,8 +318,12 @@ function fieldsShowRound(roundNumber) {
         console.log("painting starts");
         var tr_ = document.getElementById("orRow" + selectedRound);
         if (tr_) {
-            tr_.style.backgroundColor = document.getElementsByTagName('body')[0].style.backgroundColor;
-            tr_.style.color = document.getElementsByTagName('body')[0].style.color;
+            if ("jackpot_won" in results[selectedRound] && results[selectedRound].jackpot_won === true) {
+                tr_.style.backgroundColor = "#807d53";
+            } else {
+                tr_.style.backgroundColor = document.getElementsByTagName('body')[0].style.backgroundColor;
+                tr_.style.color = document.getElementsByTagName('body')[0].style.color;
+            }
         }
     } else {
         console.error("unacceptable round number: " + roundNumber);
@@ -352,7 +354,6 @@ function fieldsShowRound(roundNumber) {
     tr_ = document.getElementById("orRow" + roundNumber);
     if (tr_) {
         tr_.style.backgroundColor = "#fff";
-//        tr_.style.color = "#000";
     }
     selectedRound = roundNumber;
 } 
