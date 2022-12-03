@@ -76,45 +76,53 @@ def print_draw(parsed_draw: dict) -> None:
         )
 
 
-def parse_draw(json_full_draw) -> dict:
+def parse_draws(json_full_result) -> list:
     """
     Structure of draw record has changed over time, this is a safe parser that
     takes only needed data from full draw info
     """
     draw = deepcopy(TEMPLATE_DRAW)
-    full_draw = None
 
-    if isinstance(json_full_draw, dict):
-        full_draw = json_full_draw["draws"][0]
-    elif isinstance(json_full_draw, list):
-        full_draw = json_full_draw[0]
+    full_draws = None
+    if isinstance(json_full_result, dict):
+        full_draws = json_full_result["draws"]
+    elif isinstance(json_full_result, list):
+        full_draws = json_full_result
     else:
-        err_msg = "Could not parse draw: %s" % str(json_full_draw)
+        err_msg = "Could not parse draw: %s" % str(json_full_result)
         logger.error(err_msg)
         raise ValueError(err_msg)
 
-    draw_date = datetime.datetime.fromtimestamp(full_draw["drawTime"] / 1000)
-    draw["id"] = full_draw["id"]
-    draw["year"] = draw_date.isocalendar()[0]
-    draw["week"] = draw_date.isocalendar()[1]
-    draw["date"] = f"{draw_date.year}.{draw_date.month}.{draw_date.day}"
-    draw["primary"] = [int(x) for x in full_draw["results"][0]["primary"]]
-    draw["adds"] = [int(x) for x in full_draw["results"][0]["secondary"]]
-    draw["jackpot_value"] = (
-        full_draw["jackpots"][0]["amount"] if "jackpots" in full_draw else -1
-    )
-    draw["scores"] = full_draw["prizeTiers"]
-    top_tier = [
-        tier
-        for tier in full_draw["prizeTiers"]
-        if tier["name"] == "5+2 oikein"
-    ][0]
-    if top_tier["shareCount"] > 0:
-        draw["jackpot_won"] = True
-    return draw
+    draws = []
+    for _, full_draw in enumerate(full_draws):
+        draw_date = datetime.datetime.fromtimestamp(
+            full_draw["drawTime"] / 1000
+        )
+        draw["id"] = full_draw["id"]
+        draw["year"] = draw_date.isocalendar()[0]
+        draw["week"] = draw_date.isocalendar()[1]
+        draw["date"] = f"{draw_date.year}.{draw_date.month}.{draw_date.day}"
+        draw["primary"] = [int(x) for x in full_draw["results"][0]["primary"]]
+        draw["adds"] = [int(x) for x in full_draw["results"][0]["secondary"]]
+        draw["jackpot_value"] = (
+            full_draw["jackpots"][0]["amount"]
+            if "jackpots" in full_draw
+            else -1
+        )
+        draw["scores"] = full_draw["prizeTiers"]
+        top_tier = [
+            tier
+            for tier in full_draw["prizeTiers"]
+            if tier["name"] == "5+2 oikein"
+        ][0]
+        if top_tier["shareCount"] > 0:
+            draw["jackpot_won"] = True
+        draws.append(draw)
+
+    return draws
 
 
-def load_draw_from_file(params: dict) -> dict:
+def load_draws_from_file(params: dict) -> list:
     """
     Load from file previously fetched draw result
     Returns parsed draw result
@@ -124,7 +132,7 @@ def load_draw_from_file(params: dict) -> dict:
         logger.debug("Loading result file %s", filename)
     if os.path.isfile(filename):
         with open(filename, "r") as json_file:
-            return parse_draw(json.load(json_file))
+            return parse_draws(json.load(json_file))
     else:
         logger.error("Cannot find file %s", filename)
     return None
@@ -134,5 +142,5 @@ def load_and_print_draw(params: dict) -> None:
     """
     Load from file previously fetched draw result and print it
     """
-    draw_result = load_draw_from_file(params)
+    draw_result = load_draws_from_file(params)
     print_draw(draw_result)

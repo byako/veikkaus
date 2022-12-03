@@ -7,7 +7,7 @@ import os.path
 
 import requests
 
-from veikki.handies import parse_draw
+from handies import parse_draws
 
 
 logger = logging.getLogger("veikkilogger")
@@ -24,13 +24,14 @@ VEIKKAUS_HEADERS = {
 }
 
 
-def append_to_latest(new_result: dict, params: dict) -> None:
+def append_to_latest(new_results: list, params: dict) -> None:
     """Append new record to the end of latest file"""
     logger.debug("appending new result to %s", params["latest_file"])
     if os.path.exists(params["latest_file"]):
         with open(params["latest_file"], "r+") as json_file:
             results = json.load(json_file)
-            results.append(new_result)
+            for new_result in new_results:
+                results.append(new_result)
             json_file.seek(0)
             json.dump(results, json_file)
     else:
@@ -56,7 +57,7 @@ def save_result_to_file(filename: str, text: str) -> bool:
     return True
 
 
-def get_draw(params: dict) -> dict:
+def get_week_results(params: dict) -> list:
     """Fetch draw result from VEIKKAUS_HOST"""
     rurl = "%s/api/draw-results/v1/games/ejackpot/draws/by-week/%d-W%02d" % (
         VEIKKAUS_HOST,
@@ -64,20 +65,20 @@ def get_draw(params: dict) -> dict:
         params["week"],
     )
     req = requests.get(rurl, verify=True, headers=VEIKKAUS_HEADERS)
-    latest_result = {}
+    latest_results = []
     if req.status_code == 200:
         try:
-            json_full_draw = req.json()
-            latest_result = parse_draw(json_full_draw)
+            json_full_result = req.json()
+            latest_results = parse_draws(json_full_result)
             s_file = "results/ejackpot_%s_%s.json" % (
                 params["year"],
                 params["week"],
             )
             if save_result_to_file(s_file, req.text):
-                append_to_latest(latest_result, params)
+                append_to_latest(latest_results, params)
         except Exception as woat:  # pylint: disable=broad-except
             logger.error("Request failed: %s", woat)
     else:
         logger.error("request failed: %s", req.text)
 
-    return latest_result
+    return latest_results

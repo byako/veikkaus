@@ -9,8 +9,8 @@ import logging
 import os
 import subprocess
 
-from veikki.fetch_results import get_draw
-from veikki.handies import parse_draw
+from fetch_results import get_week_results
+from handies import parse_draws
 
 
 logger = logging.getLogger("veikkilogger")
@@ -35,15 +35,19 @@ def regenerate_latest(params) -> None:
         filepath = os.path.join("results", filename)
         logger.debug("%s", filepath)
         with open(filepath) as draw_file:
-            draw = parse_draw(json.load(draw_file))
-            if f'ejackpot_{draw["year"]}_{draw["week"]}.json' != filename:
+            draws = parse_draws(json.load(draw_file))
+            if (
+                f'ejackpot_{draws[0]["year"]}_{draws[0]["week"]}.json'
+                != filename
+            ):
                 logger.error(
                     "filename doesn't match content %s: %s / %s",
                     filename,
-                    draw["year"],
-                    draw["week"],
+                    draws[0]["year"],
+                    draws[0]["week"],
                 )
-            results.append(draw)
+            for result in draws:
+                results.append(result)
 
     with open(params["latest_file"], "w") as latest_file:
         logger.debug("Saving new %s", params["latest_file"])
@@ -73,11 +77,11 @@ def refetch_all(params: dict) -> None:
         for idx_week in range(week_range_start, week_range_limit):
             params["week"] = idx_week
             logger.debug("fetching %s / %s", params["year"], params["week"])
-            w53 = get_draw(params)
+            w53 = get_week_results(params)
             if idx_week == 52:
                 w52 = w53
             elif idx_week == 53:
-                if w52["id"] == w53["id"]:
+                if w52[0]["id"] == w53[0]["id"]:
                     filename = (
                         f'ejackpot_{params["year"]}_{params["week"]}.json'
                     )

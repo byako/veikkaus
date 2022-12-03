@@ -16,7 +16,7 @@ CONFIG = {"numbersLimit": 50, "additionalLimit": 10}
 
 
 def plot_one(p_tuple):
-    """ test plotting into file """
+    """test plotting into file"""
     (primary, average, filename) = p_tuple
     if os.path.isfile(filename):
         print(f"ERROR: plot_one: {filename} exists, cannot plot")
@@ -67,7 +67,7 @@ def plot_all(params):
             common_stats[sec - 1] += 1
             additional_stats[sec - 1] += 1
 
-        filename = f'png/ejackpot_{draw["year"]}_{draw["week"]}.png'
+        filename = f'png/ejackpot_id_{draw["id"]}.png'
         average_stats = sum(primary_stats) / CONFIG["numbersLimit"]
         to_plot.append((deepcopy(primary_stats), average_stats, filename))
     with multiprocessing.Pool(multiprocessing.cpu_count()) as plot_pool:

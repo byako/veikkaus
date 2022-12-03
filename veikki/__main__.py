@@ -8,11 +8,11 @@ import logging
 import os
 import sys
 
-from veikki.handies import load_and_print_draw, print_latest_result_date
-from veikki.fetch_results import get_draw
-from veikki.plot_results import plot_all
-from veikki.processing import do_process, process_optimize
-from veikki.regenerate import refetch_all, regenerate_latest
+from handies import load_and_print_draw, print_latest_result_date
+from fetch_results import get_week_results
+from plot_results import plot_all
+from processing import do_process, process_optimize
+from regenerate import refetch_all, regenerate_latest
 
 
 logger = logging.getLogger("veikkilogger")
@@ -44,7 +44,7 @@ def _print_usage_and_exit(_=None):
 
 
 commands = {
-    "fetch": get_draw,
+    "fetch": get_week_results,
     "help": _print_usage_and_exit,
     "latest": print_latest_result_date,
     "parse": load_and_print_draw,
