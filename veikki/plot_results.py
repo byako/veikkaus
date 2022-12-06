@@ -12,7 +12,7 @@ from matplotlib.ticker import AutoMinorLocator, MultipleLocator
 logger = logging.getLogger("veikkilogger")
 logger.setLevel(logging.DEBUG)
 
-CONFIG = {"numbersLimit": 50, "additionalLimit": 10}
+CONFIG = {"numbersLimit": 50, "additionalLimit": 12}
 
 
 def plot_one(p_tuple):

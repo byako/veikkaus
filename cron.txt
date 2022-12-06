@@ -1,0 +1,1 @@
+00 06 * * Sat cd /home/byako/veikkaus/ && python3 veikki fetch plot -y $(date +\%Y) -w $(date +\%W)

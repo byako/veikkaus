@@ -15,7 +15,7 @@ var games = {
         "numbersStart":1,
         "numbersLimit":50,
         "additionalNumbersStart":1,
-        "additionalNumbersLimit":10,
+        "additionalNumbersLimit":12,
         "combinationLength":7
     },
 }
@@ -85,9 +85,8 @@ function setMinAvgMax() {
 function swapImage(roundNumber) {
     console.log("new image is for number: " + roundNumber);
     if (roundNumber < results.length) {
-        var weekn = parseInt(results[roundNumber].week);
-        var yearn = results[roundNumber].year;
-        var newURL = "png/" + game + "_" + yearn + "_" + weekn + ".png";
+        var id = parseInt(results[roundNumber].id);
+        var newURL = "png/" + game + "_id_"  + id + ".png";
         console.log("replacing picture with " + newURL);
         document.getElementById("gnuplotted").setAttribute("src", newURL);
     }

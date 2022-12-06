@@ -1,0 +1,774 @@
+[
+   {
+      "addonDraws" : [
+         {
+            "brandName" : "Tiistai-Jokeri",
+            "closeTime" : 1669744800000,
+            "drawTime" : 1669751100000,
+            "gameName" : "JOKERI",
+            "gameRuleSet" : {
+               "prizeTierDescriptions" : [
+                  {
+                     "drawType" : "DOUBLING",
+                     "multiplier" : 2,
+                     "numberOfMatchingSelections" : 1,
+                     "numberOfSelections" : 1
+                  }
+               ]
+            },
+            "id" : 3176,
+            "jackpots" : [
+               {
+                  "amount" : 100000000,
+                  "id" : "PRIMARY"
+               }
+            ],
+            "name" : "TUESDAY",
+            "openTime" : 1669150800000,
+            "prizeTiers" : [
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "1",
+                  "multiplier" : false,
+                  "name" : "7 oikein",
+                  "shareAmount" : 0,
+                  "shareCount" : 0,
+                  "totalAmount" : 0
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "2",
+                  "multiplier" : false,
+                  "name" : "6 oikein",
+                  "shareAmount" : 0,
+                  "shareCount" : 0,
+                  "totalAmount" : 0
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "3",
+                  "multiplier" : false,
+                  "name" : "5 oikein",
+                  "shareAmount" : 50000,
+                  "shareCount" : 12,
+                  "totalAmount" : 350000
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "4",
+                  "multiplier" : false,
+                  "name" : "4 oikein",
+                  "shareAmount" : 5000,
+                  "shareCount" : 169,
+                  "totalAmount" : 510000
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "5",
+                  "multiplier" : false,
+                  "name" : "3 oikein",
+                  "shareAmount" : 600,
+                  "shareCount" : 1704,
+                  "totalAmount" : 762600
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "6",
+                  "multiplier" : false,
+                  "name" : "2 oikein",
+                  "shareAmount" : 300,
+                  "shareCount" : 9051,
+                  "totalAmount" : 2223600
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "1",
+                  "multiplier" : true,
+                  "name" : "7 oikein",
+                  "shareAmount" : 0,
+                  "shareCount" : 0,
+                  "totalAmount" : 0
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "2",
+                  "multiplier" : true,
+                  "name" : "6 oikein",
+                  "shareAmount" : 0,
+                  "shareCount" : 0,
+                  "totalAmount" : 0
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "3",
+                  "multiplier" : true,
+                  "name" : "5 oikein",
+                  "shareAmount" : 100000,
+                  "shareCount" : 5,
+                  "totalAmount" : 500000
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "4",
+                  "multiplier" : true,
+                  "name" : "4 oikein",
+                  "shareAmount" : 10000,
+                  "shareCount" : 67,
+                  "totalAmount" : 670000
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "5",
+                  "multiplier" : true,
+                  "name" : "3 oikein",
+                  "shareAmount" : 1200,
+                  "shareCount" : 433,
+                  "totalAmount" : 519600
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "6",
+                  "multiplier" : true,
+                  "name" : "2 oikein",
+                  "shareAmount" : 600,
+                  "shareCount" : 1639,
+                  "totalAmount" : 983400
+               }
+            ],
+            "results" : [
+               {
+                  "primary" : [
+                     "0",
+                     "7",
+                     "2",
+                     "2",
+                     "5",
+                     "4",
+                     "0"
+                  ]
+               }
+            ],
+            "resultsAvailableTime" : 1669751100000,
+            "status" : "PAYABLE"
+         },
+         {
+            "brandName" : "Tiistai-Lomatonni",
+            "closeTime" : 1669744800000,
+            "drawTime" : 1669751100000,
+            "gameName" : "RAFFLE",
+            "gameRuleSet" : {
+               "primarySelectionsAllowed" : [
+                  "Amsterdam",
+                  "Ateena",
+                  "Bangkok",
+                  "Barcelona",
+                  "Berliini",
+                  "Bryssel",
+                  "Budapest",
+                  "Buenos Aires",
+                  "Cannes",
+                  "Casablanca",
+                  "Chicago",
+                  "Dallas",
+                  "Delhi",
+                  "Dubai",
+                  "Dublin",
+                  "Firenze",
+                  "Hampuri",
+                  "Hanoi",
+                  "Istanbul",
+                  "Kairo",
+                  "Kuala Lumpur",
+                  "KÃ¶Ã¶penhamina",
+                  "Las Palmas",
+                  "Lissabon",
+                  "Lontoo",
+                  "Los Angeles",
+                  "Madrid",
+                  "Malaga",
+                  "Marrakech",
+                  "Marseille",
+                  "Melbourne",
+                  "Miami",
+                  "Milano",
+                  "Monaco",
+                  "Montreal",
+                  "Split",
+                  "New York",
+                  "Nizza",
+                  "Oslo",
+                  "Pariisi",
+                  "Peking",
+                  "Ottawa",
+                  "Praha",
+                  "Reykjavik",
+                  "Riika",
+                  "Rio de Janeiro",
+                  "Rooma",
+                  "San Diego",
+                  "San Francisco",
+                  "Santiago",
+                  "Sao Paulo",
+                  "Singapore",
+                  "Sydney",
+                  "Tallinna",
+                  "Tokio",
+                  "Tukholma",
+                  "Varsova",
+                  "Venetsia",
+                  "Wien",
+                  "Vilna"
+               ]
+            },
+            "id" : 1098,
+            "name" : "TUESDAY",
+            "openTime" : 1669150800000,
+            "prizeTiers" : [
+               {
+                  "id" : "1",
+                  "name" : "Kaupunki ja numero oikein",
+                  "shareAmount" : 100000,
+                  "shareCount" : 6
+               },
+               {
+                  "id" : "2",
+                  "name" : "Kaupunki oikein",
+                  "shareAmount" : 500,
+                  "shareCount" : 464
+               }
+            ],
+            "results" : [
+               {
+                  "drawType" : "NORMAL",
+                  "primary" : [
+                     "59"
+                  ],
+                  "secondary" : [
+                     "23"
+                  ]
+               }
+            ],
+            "resultsAvailableTime" : 1669751100000,
+            "status" : "PAYABLE"
+         }
+      ],
+      "brandName" : "Tiistai-EuroJackpot",
+      "closeTime" : 1669744800000,
+      "drawTime" : 1669751100000,
+      "gameName" : "EJACKPOT",
+      "id" : 594,
+      "jackpots" : [
+         {
+            "amount" : 4700000000,
+            "id" : "PRIMARY"
+         },
+         {
+            "amount" : 100000000,
+            "id" : "SECONDARY"
+         }
+      ],
+      "name" : "TUESDAY",
+      "openTime" : 1669150800000,
+      "prizeTiers" : [
+         {
+            "additionalPrizeTier" : false,
+            "id" : "1",
+            "name" : "5+2 oikein",
+            "shareAmount" : 0,
+            "shareCount" : 0
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "2",
+            "name" : "5+1 oikein",
+            "shareAmount" : 0,
+            "shareCount" : 0
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "3",
+            "name" : "5+0 oikein",
+            "shareAmount" : 7055310,
+            "shareCount" : 9
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "4",
+            "name" : "4+2 oikein",
+            "shareAmount" : 1309230,
+            "shareCount" : 8
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "5",
+            "name" : "4+1 oikein",
+            "shareAmount" : 33740,
+            "shareCount" : 388
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "6",
+            "name" : "3+2 oikein",
+            "shareAmount" : 22390,
+            "shareCount" : 643
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "7",
+            "name" : "4+0 oikein",
+            "shareAmount" : 11130,
+            "shareCount" : 941
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "8",
+            "name" : "2+2 oikein",
+            "shareAmount" : 3420,
+            "shareCount" : 9755
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "9",
+            "name" : "3+1 oikein",
+            "shareAmount" : 2280,
+            "shareCount" : 16322
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "10",
+            "name" : "3+0 oikein",
+            "shareAmount" : 1770,
+            "shareCount" : 39878
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "11",
+            "name" : "1+2 oikein",
+            "shareAmount" : 1680,
+            "shareCount" : 52493
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "12",
+            "name" : "2+1 oikein",
+            "shareAmount" : 1100,
+            "shareCount" : 239441
+         }
+      ],
+      "results" : [
+         {
+            "primary" : [
+               "9",
+               "16",
+               "32",
+               "37",
+               "46"
+            ],
+            "secondary" : [
+               "7",
+               "12"
+            ]
+         }
+      ],
+      "resultsAvailableTime" : 1669751100000,
+      "status" : "PAYABLE"
+   },
+   {
+      "addonDraws" : [
+         {
+            "brandName" : "Perjantai-Jokeri",
+            "closeTime" : 1670004000000,
+            "drawTime" : 1670010300000,
+            "gameName" : "JOKERI",
+            "gameRuleSet" : {
+               "prizeTierDescriptions" : [
+                  {
+                     "drawType" : "DOUBLING",
+                     "multiplier" : 2,
+                     "numberOfMatchingSelections" : 1,
+                     "numberOfSelections" : 1
+                  }
+               ]
+            },
+            "id" : 3178,
+            "jackpots" : [
+               {
+                  "amount" : 100000000,
+                  "id" : "PRIMARY"
+               }
+            ],
+            "name" : "FRIDAY",
+            "openTime" : 1669410000000,
+            "prizeTiers" : [
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "1",
+                  "multiplier" : false,
+                  "name" : "7 oikein",
+                  "shareAmount" : 0,
+                  "shareCount" : 0,
+                  "totalAmount" : 0
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "2",
+                  "multiplier" : false,
+                  "name" : "6 oikein",
+                  "shareAmount" : 2000000,
+                  "shareCount" : 1,
+                  "totalAmount" : 0
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "3",
+                  "multiplier" : false,
+                  "name" : "5 oikein",
+                  "shareAmount" : 50000,
+                  "shareCount" : 24,
+                  "totalAmount" : 450000
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "4",
+                  "multiplier" : false,
+                  "name" : "4 oikein",
+                  "shareAmount" : 5000,
+                  "shareCount" : 368,
+                  "totalAmount" : 1300000
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "5",
+                  "multiplier" : false,
+                  "name" : "3 oikein",
+                  "shareAmount" : 600,
+                  "shareCount" : 3629,
+                  "totalAmount" : 1602000
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "6",
+                  "multiplier" : false,
+                  "name" : "2 oikein",
+                  "shareAmount" : 300,
+                  "shareCount" : 19323,
+                  "totalAmount" : 4810800
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "1",
+                  "multiplier" : true,
+                  "name" : "7 oikein",
+                  "shareAmount" : 0,
+                  "shareCount" : 0,
+                  "totalAmount" : 0
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "2",
+                  "multiplier" : true,
+                  "name" : "6 oikein",
+                  "shareAmount" : 4000000,
+                  "shareCount" : 1,
+                  "totalAmount" : 4000000
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "3",
+                  "multiplier" : true,
+                  "name" : "5 oikein",
+                  "shareAmount" : 100000,
+                  "shareCount" : 15,
+                  "totalAmount" : 1500000
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "4",
+                  "multiplier" : true,
+                  "name" : "4 oikein",
+                  "shareAmount" : 10000,
+                  "shareCount" : 108,
+                  "totalAmount" : 1080000
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "5",
+                  "multiplier" : true,
+                  "name" : "3 oikein",
+                  "shareAmount" : 1200,
+                  "shareCount" : 959,
+                  "totalAmount" : 1150800
+               },
+               {
+                  "additionalPrizeTier" : false,
+                  "drawType" : "NORMAL",
+                  "id" : "6",
+                  "multiplier" : true,
+                  "name" : "2 oikein",
+                  "shareAmount" : 600,
+                  "shareCount" : 3287,
+                  "totalAmount" : 1972200
+               }
+            ],
+            "results" : [
+               {
+                  "primary" : [
+                     "6",
+                     "6",
+                     "0",
+                     "5",
+                     "0",
+                     "3",
+                     "0"
+                  ]
+               }
+            ],
+            "resultsAvailableTime" : 1670010300000,
+            "status" : "PAYABLE"
+         },
+         {
+            "brandName" : "Perjantai-Lomatonni",
+            "closeTime" : 1670004000000,
+            "drawTime" : 1670010300000,
+            "gameName" : "RAFFLE",
+            "gameRuleSet" : {
+               "primarySelectionsAllowed" : [
+                  "Amsterdam",
+                  "Ateena",
+                  "Bangkok",
+                  "Barcelona",
+                  "Berliini",
+                  "Bryssel",
+                  "Budapest",
+                  "Buenos Aires",
+                  "Cannes",
+                  "Casablanca",
+                  "Chicago",
+                  "Dallas",
+                  "Delhi",
+                  "Dubai",
+                  "Dublin",
+                  "Firenze",
+                  "Hampuri",
+                  "Hanoi",
+                  "Istanbul",
+                  "Kairo",
+                  "Kuala Lumpur",
+                  "KÃ¶Ã¶penhamina",
+                  "Las Palmas",
+                  "Lissabon",
+                  "Lontoo",
+                  "Los Angeles",
+                  "Madrid",
+                  "Malaga",
+                  "Marrakech",
+                  "Marseille",
+                  "Melbourne",
+                  "Miami",
+                  "Milano",
+                  "Monaco",
+                  "Montreal",
+                  "Split",
+                  "New York",
+                  "Nizza",
+                  "Oslo",
+                  "Pariisi",
+                  "Peking",
+                  "Ottawa",
+                  "Praha",
+                  "Reykjavik",
+                  "Riika",
+                  "Rio de Janeiro",
+                  "Rooma",
+                  "San Diego",
+                  "San Francisco",
+                  "Santiago",
+                  "Sao Paulo",
+                  "Singapore",
+                  "Sydney",
+                  "Tallinna",
+                  "Tokio",
+                  "Tukholma",
+                  "Varsova",
+                  "Venetsia",
+                  "Wien",
+                  "Vilna"
+               ]
+            },
+            "id" : 1100,
+            "name" : "FRIDAY",
+            "openTime" : 1669410000000,
+            "prizeTiers" : [
+               {
+                  "id" : "1",
+                  "name" : "Kaupunki ja numero oikein",
+                  "shareAmount" : 100000,
+                  "shareCount" : 9
+               },
+               {
+                  "id" : "2",
+                  "name" : "Kaupunki oikein",
+                  "shareAmount" : 500,
+                  "shareCount" : 926
+               }
+            ],
+            "results" : [
+               {
+                  "drawType" : "NORMAL",
+                  "primary" : [
+                     "17"
+                  ],
+                  "secondary" : [
+                     "100"
+                  ]
+               }
+            ],
+            "resultsAvailableTime" : 1670010300000,
+            "status" : "PAYABLE"
+         }
+      ],
+      "brandName" : "Perjantai-EuroJackpot",
+      "closeTime" : 1670004000000,
+      "drawTime" : 1670010300000,
+      "gameName" : "EJACKPOT",
+      "id" : 595,
+      "jackpots" : [
+         {
+            "amount" : 5700000000,
+            "id" : "PRIMARY"
+         },
+         {
+            "amount" : 300000000,
+            "id" : "SECONDARY"
+         }
+      ],
+      "name" : "FRIDAY",
+      "openTime" : 1669410000000,
+      "prizeTiers" : [
+         {
+            "additionalPrizeTier" : false,
+            "id" : "1",
+            "name" : "5+2 oikein",
+            "shareAmount" : 0,
+            "shareCount" : 0
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "2",
+            "name" : "5+1 oikein",
+            "shareAmount" : 316295490,
+            "shareCount" : 1
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "3",
+            "name" : "5+0 oikein",
+            "shareAmount" : 11487810,
+            "shareCount" : 10
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "4",
+            "name" : "4+2 oikein",
+            "shareAmount" : 701810,
+            "shareCount" : 27
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "5",
+            "name" : "4+1 oikein",
+            "shareAmount" : 45720,
+            "shareCount" : 518
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "6",
+            "name" : "3+2 oikein",
+            "shareAmount" : 22300,
+            "shareCount" : 1168
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "7",
+            "name" : "4+0 oikein",
+            "shareAmount" : 10040,
+            "shareCount" : 1887
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "8",
+            "name" : "2+2 oikein",
+            "shareAmount" : 3680,
+            "shareCount" : 16380
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "9",
+            "name" : "3+1 oikein",
+            "shareAmount" : 2850,
+            "shareCount" : 23660
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "10",
+            "name" : "3+0 oikein",
+            "shareAmount" : 1690,
+            "shareCount" : 87006
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "11",
+            "name" : "1+2 oikein",
+            "shareAmount" : 1690,
+            "shareCount" : 83250
+         },
+         {
+            "additionalPrizeTier" : false,
+            "id" : "12",
+            "name" : "2+1 oikein",
+            "shareAmount" : 1450,
+            "shareCount" : 330607
+         }
+      ],
+      "results" : [
+         {
+            "primary" : [
+               "6",
+               "12",
+               "25",
+               "48",
+               "49"
+            ],
+            "secondary" : [
+               "11",
+               "12"
+            ]
+         }
+      ],
+      "resultsAvailableTime" : 1670010300000,
+      "status" : "PAYABLE"
+   }
+]
