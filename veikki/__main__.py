@@ -75,10 +75,6 @@ def sanitize(parameters):
     sys.exit(1)
 
 
-if sys.version < "3.7":
-    logger.error("Python 3.7 or newer is required")
-    sys.exit(0)
-
 argParser = argparse.ArgumentParser("python3 veikki")
 argParser.add_argument(
     "-q", "--quiet", action="store_true", help="Suppress output"

@@ -117,7 +117,7 @@ def parse_draws(json_full_result) -> list:
         ][0]
         if top_tier["shareCount"] > 0:
             draw["jackpot_won"] = True
-        draws.append(draw)
+        draws.append(deepcopy(draw))
 
     return draws
 

@@ -536,7 +536,7 @@ function processResults() {
     rerender(selectedRound);
 }
 
-function loadExtendedResultInfo(pgame, pyear, pweek_number) {
+function loadExtendedResultInfo(pgame, pyear, pweek_number, id) {
     var xmlhttp;
     if (window.XMLHttpRequest) {
         xmlhttp=new XMLHttpRequest();
@@ -545,12 +545,18 @@ function loadExtendedResultInfo(pgame, pyear, pweek_number) {
     }
     xmlhttp.onreadystatechange=function() {
         if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-            var parseResult = JSON.parse(xmlhttp.responseText);
-            if (parseResult == undefined) {
+            var parsedResults = JSON.parse(xmlhttp.responseText);
+            if (parsedResults== undefined) {
                 console.log("Could not parse results data received from server");
                 return;
             }
-            processExtendedResultInfo(parseResult[0]);
+            for (var ridx=0; ridx <= parsedResults.length; ridx++) {
+                console.log("checking if result " + parsedResults[ridx].id + " is suitable")
+                if (parsedResults[ridx].id == id) {
+                    processExtendedResultInfo(parsedResults[ridx]);
+                    break;
+                }
+            }
         }
     }
 
@@ -611,7 +617,7 @@ function rerender(newRound) {
     fieldsShowRound(newRound);
     swapImage(newRound);
     if (showExtendedResultInfo) {
-       loadExtendedResultInfo(game, results[newRound].year, results[newRound].week);
+       loadExtendedResultInfo(game, results[newRound].year, results[newRound].week, results[newRound].id);
     }
 }
 

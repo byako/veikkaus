@@ -3,6 +3,7 @@ post-processing results/*json files into:
 - latest.json
 - plot sources
 """
+from copy import deepcopy
 from datetime import datetime
 import json
 import logging
@@ -47,7 +48,8 @@ def regenerate_latest(params) -> None:
                     draws[0]["week"],
                 )
             for result in draws:
-                results.append(result)
+                print("Adding result %s - %s" % (result["id"], result["date"]))
+                results.append(deepcopy(result))
 
     with open(params["latest_file"], "w") as latest_file:
         logger.debug("Saving new %s", params["latest_file"])
