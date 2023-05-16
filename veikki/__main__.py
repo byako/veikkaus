@@ -33,20 +33,8 @@ params = {
 }
 
 
-def _print_usage_and_exit(_=None):
-    print(
-        """
-        Usage: %s [command]
-            command: %s
-        """
-        % (sys.argv[0], ", ".join(commands.keys()))
-    )
-    sys.exit(1)
-
-
 commands = {
     "fetch": get_week_results,
-    "help": _print_usage_and_exit,
     "latest": print_latest_result_date,
     "parse": load_and_print_draw,
     "plot": plot_all,
@@ -88,7 +76,7 @@ argParser.add_argument("-c", "--config")
 argParser.add_argument(
     "command",
     nargs="+",
-    help="Command: latest, parse, plot, process, refetch, regen",
+    help="latest, parse, plot, process, refetch, regen",
 )
 
 args = argParser.parse_args()
@@ -119,6 +107,7 @@ for params_key in params:
 for command in params["commands"]:
     if command not in commands:
         logger.error("Unsupported command: %s", command)
-        _print_usage_and_exit()
+        argParser.print_help()
+        sys.exit(1)
     logger.info("calling %s", command)
     commands[command](params)
