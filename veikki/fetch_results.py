@@ -11,7 +11,6 @@ from handies import parse_draws
 
 
 logger = logging.getLogger("veikkilogger")
-logger.setLevel(logging.DEBUG)
 
 # the veikkaus site address
 VEIKKAUS_HOST = "https://www.veikkaus.fi"
@@ -26,7 +25,7 @@ VEIKKAUS_HEADERS = {
 
 def append_to_latest(new_results: list, params: dict) -> None:
     """Append new record to the end of latest file"""
-    logger.debug("appending new result to %s", params["latest_file"])
+    logger.info("appending new result to %s", params["latest_file"])
     if os.path.exists(params["latest_file"]):
         with open(params["latest_file"], "r+") as json_file:
             results = json.load(json_file)
@@ -40,10 +39,9 @@ def append_to_latest(new_results: list, params: dict) -> None:
 
 def save_result_to_file(filename: str, text: str) -> bool:
     """Save argument text to argument filename file if it does not exist"""
-    logger.debug("Saving to file %s", filename)
+    logger.info("Saving to file %s", filename)
     if os.path.exists(filename):
-        logger.error("file already exists: %s", filename)
-        return False
+        logger.warn("file %s already exists, overwriting", filename)
 
     try:
         out_file = open(filename, "w")

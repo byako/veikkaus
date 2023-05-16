@@ -41,12 +41,13 @@ def print_latest_result_date(params: dict) -> str:
     get the date of latest saved result
     """
     results = load_latest_file(params)
-    logger.debug(
-        "%s / %s : %s",
-        results[-1]["year"],
-        results[-1]["week"],
-        results[-1]["date"],
-    )
+    print("%s / %s : %s" % (results[-1]["year"], results[-1]["week"], results[-1]["date"]))
+
+
+def print_draws(parsed_draws: list) -> None:
+    """ call print_draw for each parsed_draws """
+    for draw in parsed_draws:
+        print_draw(draw)
 
 
 def print_draw(parsed_draw: dict) -> None:
@@ -142,5 +143,5 @@ def load_and_print_draw(params: dict) -> None:
     """
     Load from file previously fetched draw result and print it
     """
-    draw_result = load_draws_from_file(params)
-    print_draw(draw_result)
+    draw_results = load_draws_from_file(params)
+    print_draws(draw_results)

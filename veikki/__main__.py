@@ -17,9 +17,9 @@ from regenerate import refetch_all, regenerate_latest
 
 logger = logging.getLogger("veikkilogger")
 console = logging.StreamHandler()
-console.setLevel(logging.DEBUG)
+console.setLevel(logging.INFO)
 logger.addHandler(console)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 params = {
     "year": None,
@@ -29,6 +29,7 @@ params = {
     "config": "config.ini",
     "iterations": 0,
     "quiet": False,
+    "debug": True,
 }
 
 
@@ -79,6 +80,7 @@ argParser = argparse.ArgumentParser("python3 veikki")
 argParser.add_argument(
     "-q", "--quiet", action="store_true", help="Suppress output"
 )
+argParser.add_argument("-d", "--debug", action="store_true", help="Super verbose")
 argParser.add_argument("-w", "--week")
 argParser.add_argument("-y", "--year")
 argParser.add_argument("-i", "--iterations")
@@ -95,6 +97,7 @@ params["commands"] = args.command
 if args.iterations:
     params["iterations"] = int(args.iterations)
 params["quiet"] = args.quiet
+params["debug"] = args.debug
 params["year"] = int(args.year) if args.year else None
 params["week"] = int(args.week) if args.week else None
 if args.config:
@@ -102,6 +105,10 @@ if args.config:
 if params["config"] and not os.path.isfile(params["config"]):
     logger.error("Could not access %s", params["config"])
     sys.exit(1)
+if params["debug"]:
+    print("Enabling debug")
+    console.setLevel(logging.DEBUG)
+    logger.setLevel(logging.DEBUG)
 
 sanitize(params)
 
@@ -113,5 +120,5 @@ for command in params["commands"]:
     if command not in commands:
         logger.error("Unsupported command: %s", command)
         _print_usage_and_exit()
-    logger.debug("calling %s", command)
+    logger.info("calling %s", command)
     commands[command](params)

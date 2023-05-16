@@ -15,7 +15,6 @@ from handies import parse_draws
 
 
 logger = logging.getLogger("veikkilogger")
-logger.setLevel(logging.DEBUG)
 
 
 def regenerate_latest(params) -> None:

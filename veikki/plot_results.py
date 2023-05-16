@@ -10,7 +10,6 @@ from matplotlib import pyplot
 from matplotlib.ticker import AutoMinorLocator, MultipleLocator
 
 logger = logging.getLogger("veikkilogger")
-logger.setLevel(logging.DEBUG)
 
 CONFIG = {"numbersLimit": 50, "additionalLimit": 12}
 
@@ -19,9 +18,9 @@ def plot_one(p_tuple):
     """test plotting into file"""
     (primary, average, filename) = p_tuple
     if os.path.isfile(filename):
-        print(f"ERROR: plot_one: {filename} exists, cannot plot")
+        logger.debug("plot_one:%s exists, skipping", filename)
         return
-    logger.debug("plotting %s", filename)
+    logger.info("plotting %s", filename)
     avg_list = [average] * CONFIG["numbersLimit"]
     nums = list(range(1, CONFIG["numbersLimit"] + 1))
 

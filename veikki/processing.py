@@ -12,7 +12,6 @@ import numpy
 from handies import load_draws_from_file, load_latest_file
 
 logger = logging.getLogger("veikkilogger")
-logger.setLevel(logging.DEBUG)
 
 
 def print_usage():
@@ -70,9 +69,6 @@ def find_duplicates(results: list) -> None:
     longest_match_infos = []
     longest_match_count = 0
     counts = {
-        "0:0": 0,
-        "0:1": 0,
-        "0:2": 0,
         "1:0": 0,
         "1:1": 0,
         "1:2": 0,
@@ -118,7 +114,11 @@ def find_duplicates(results: list) -> None:
                 )
                 current_match = matches[0] + matches[1]
                 match = "%d:%d" % (matches[0], matches[1])
-                counts[match] += 1
+                if not match.startswith("0:"):
+                    counts[match] += 1
+                    if match.startswith("4"):
+                        print("%s: %s/%s - %s/%s : %s-%s - %s-%s" % (
+                            match, res["year"], res["week"], res2["year"], res2["week"], res["primary"], res["adds"], res2["primary"], res2["adds"]))
 
             if current_match > longest_match:
                 longest_match = current_match
@@ -402,7 +402,7 @@ def _prepare_to_process(params):
     params["results"] = load_latest_file(params)
     stats_main = []
     stats_adds = []
-    for _ in range(0, 11):
+    for _ in range(0, 13):
         stats_adds.append(0)
     for _ in range(0, 51):
         stats_main.append(0)
@@ -422,8 +422,8 @@ def do_process(params):
     Setup and call processing
     """
     _prepare_to_process(params)
-    # find_duplicates(params["results"])
-    project(params)
+    find_duplicates(params["results"])
+    #project(params)
     # stat_relative(params)
 
 
