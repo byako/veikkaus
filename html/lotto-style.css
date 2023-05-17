@@ -20,7 +20,7 @@ tbody {
   font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
 }
 
-#mid-cont
+#resultsPage, #analyticsPage, #mid-cont
 {
     background-color: #555;
     color: #fff;

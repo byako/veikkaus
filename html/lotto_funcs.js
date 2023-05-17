@@ -36,8 +36,8 @@ var d1 = [];
 
 // d2: times a number has appeared as an additional
 var d2 = [];
-// d3: the average number from d1
-var d3 = [ [1,0], [2,0] ];
+// d3_i: the average number from d1
+var d3_i = [ [1,0], [2,0] ];
 // d4: the minimum number from d1
 var d4 = [ [1,0], [2,0] ];
 // d5: the maximum number from d1 
@@ -73,8 +73,8 @@ function setMinAvgMax() {
     }
     avg1 /= (games[game].numbersLimit);
 
-    d3[0][1] = avg1;
-    d3[1][1] = avg1;
+    d3_i[0][1] = avg1;
+    d3_i[1][1] = avg1;
     d4[0][1] = min1;
     d4[1][1] = min1;
     d5[0][1] = max1;
@@ -362,7 +362,7 @@ function fieldsShowStats() {
     if (table_) {
         for (var idx=1; idx<40; idx++) {
                 var cell_ = document.getElementById("cell" + String(idx));
-                var color_ = (d3[1][1]-d1[idx-1][1]);
+                var color_ = (d3_i[1][1]-d1[idx-1][1]);
                 var colorText = "";
                 if (color_ > 0) { // cold colors
                     colorText = "rgb(" + 128 + "," + 128 + "," + (64+color_*10) + ")";
@@ -409,7 +409,7 @@ function populateOldResultsStats() {
             cell_.selected = false;
         }
     }
-    document.getElementById("avgDiv").innerHTML = '' + d3[0][1].toFixed(0);
+    document.getElementById("avgDiv").innerHTML = '' + d3_i[0][1].toFixed(0);
     document.getElementById("minDiv").innerHTML = '' + d4[0][1].toFixed(0);
     document.getElementById("maxDiv").innerHTML = '' + d5[0][1].toFixed(0);
 }

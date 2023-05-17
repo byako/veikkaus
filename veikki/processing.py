@@ -8,8 +8,10 @@ import configparser
 from random import randint
 import multiprocessing
 import numpy
+from statistics import geometric_mean, mean 
 
 from handies import load_draws_from_file, load_latest_file
+from plot_results import plot_history
 
 logger = logging.getLogger("veikkilogger")
 
@@ -69,9 +71,6 @@ def find_duplicates(results: list) -> None:
     longest_match_infos = []
     longest_match_count = 0
     counts = {
-        "1:0": 0,
-        "1:1": 0,
-        "1:2": 0,
         "2:0": 0,
         "2:1": 0,
         "2:2": 0,
@@ -89,30 +88,31 @@ def find_duplicates(results: list) -> None:
     for idx, res in enumerate(results):
         current_match = 0
         for idx2, res2 in enumerate(results[(idx + 1) :]):
-            if res2["primary"] == res["primary"]:
-                print("%d / %d" % (idx, idx2), end="\r")
-                print(
-                    "\n%s %s %s / %s: %s / %s %s %s\n"
-                    % (
-                        res["year"],
-                        res["week"],
-                        res["primary"],
-                        res["adds"],
-                        res2["primary"],
-                        res2["adds"],
-                        res2["year"],
-                        res2["week"],
-                    )
-                )
-                current_match = 7
-            else:
-                matches = compare(
-                    res["primary"],
-                    res["adds"],
-                    res2["primary"],
-                    res2["adds"],
-                )
-                current_match = matches[0] + matches[1]
+#            if res2["primary"] == res["primary"]:
+#                print("%d / %d" % (idx, idx2), end="\r")
+#                print(
+#                    "\n%s %s %s / %s: %s / %s %s %s\n"
+#                    % (
+#                        res["year"],
+#                        res["week"],
+#                        res["primary"],
+#                        res["adds"],
+#                        res2["primary"],
+#                        res2["adds"],
+#                        res2["year"],
+#                        res2["week"],
+#                    )
+#                )
+#                current_match = 7
+#            else:
+            matches = compare(
+                res["primary"],
+                res["adds"],
+                res2["primary"],
+                res2["adds"],
+            )
+            current_match = matches[0] + matches[1]
+            if matches[0] > 1:
                 match = "%d:%d" % (matches[0], matches[1])
                 if not match.startswith("0:"):
                     counts[match] += 1
@@ -123,7 +123,6 @@ def find_duplicates(results: list) -> None:
             if current_match > longest_match:
                 longest_match = current_match
                 longest_match_count = 1
-                longest_match_infos = []
                 longest_match_infos.append(
                     (
                         res["year"],
@@ -154,9 +153,9 @@ def find_duplicates(results: list) -> None:
         "Done looking for duplicates. Longest match: %d (%d)"
         % (longest_match, longest_match_count)
     )
-    if len(longest_match_infos) < 10:
-        for info in longest_match_infos:
-            print(info)
+#    if len(longest_match_infos) < 10:
+#        for info in longest_match_infos:
+#            print(info)
     for count_key in counts:
         logger.debug("%s %d", count_key, counts[count_key])
 
@@ -367,6 +366,11 @@ def stat_relative(params):
     Assuming that stats were generated, show how popular numbers are drawn
     """
     print("relative_stats:")
+    all_relative_stats = []
+    all_means = []
+    all_means_avg = []
+    all_geomeans = []
+    all_geomeans_avg = []
     for idx in range(10, len(params["results"])):
         relative_stats = []
         sorted_stat = numpy.argsort(
@@ -376,7 +380,18 @@ def stat_relative(params):
         for num in params["results"][idx]["primary"]:
             relative_stats.append(sorted_stat.index(num))
         relative_stats.sort()
-        print(relative_stats)
+        all_relative_stats.append(relative_stats)
+
+        all_means.append(mean(relative_stats))
+        all_means_avg.append(mean(all_means))
+
+        all_geomeans.append(geometric_mean(relative_stats))
+        all_geomeans_avg.append(geometric_mean(all_geomeans))
+
+        #print(relative_stats)
+    plot_history(all_means, all_means_avg, "/tmp/means.png")
+    plot_history(all_geomeans, all_geomeans_avg, "/tmp/geomeans.png")
+    print("Done plotting relative stats")
 
 
 def _prepare_to_process(params):
@@ -422,9 +437,9 @@ def do_process(params):
     Setup and call processing
     """
     _prepare_to_process(params)
-    find_duplicates(params["results"])
-    #project(params)
-    # stat_relative(params)
+    # find_duplicates(params["results"])
+    # project(params)
+    stat_relative(params)
 
 
 def process_optimize(params):

@@ -14,6 +14,34 @@ logger = logging.getLogger("veikkilogger")
 CONFIG = {"numbersLimit": 50, "additionalLimit": 12}
 
 
+def plot_history(sliding, average, filename):
+    """plott historical data into file"""
+    if os.path.isfile(filename):
+        print(f"ERROR: plot_one: {filename} exists, cannot plot")
+        return
+    logger.debug("plotting %s", filename)
+    #avg_list = [average] * len(sliding)
+    nums = list(range(1, len(sliding) + 1))
+
+    fig, axes = pyplot.subplots()
+    fig.set_size_inches(15, 2.5)
+    axes.yaxis.set_major_locator(MultipleLocator(5))
+    axes.yaxis.set_minor_locator(AutoMinorLocator(5))
+    axes.xaxis.set_major_locator(MultipleLocator(5))
+    axes.xaxis.set_minor_locator(AutoMinorLocator(5))
+    axes.plot(nums, sliding, label="sliding")
+    axes.plot(nums, average, label="average")
+    axes.legend()
+    axes.grid(which="both")
+    axes.grid(which="minor", alpha=0.2)
+    axes.grid(which="major", alpha=0.5)
+    axes.set_xlim(1, len(sliding))
+    # axes.set_facecolor("xkcd:grey")
+    fig.tight_layout()
+
+    fig.savefig(filename, dpi=100)
+    pyplot.close(fig)
+
 def plot_one(p_tuple):
     """test plotting into file"""
     (primary, average, filename) = p_tuple
