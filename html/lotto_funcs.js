@@ -4,6 +4,7 @@ var showExtendedResultInfo = true;
 var roundsCounter = 0;
 var selectedRound = 0;
 var showFields = 1;
+var showPrizes = 1;
 var histLength = 52;
 var game = "ejackpot";
 var games = {
@@ -480,10 +481,10 @@ function showFieldsChanged(element) {
     } else {
         showFields = 1;
     }
-    renderFields();
+    toggleFieldsVisibility();
 }
 
-function renderFields() {
+function toggleFieldsVisibility() {
     var div_ = document.getElementById("fieldsTable");
     var plus_ = document.getElementById("fieldsPlus");
     var minus_ = document.getElementById("fieldsMinus");
@@ -493,6 +494,26 @@ function renderFields() {
     } else {
         div_.style.visibility = "visible";
         div_.style.display = "block";
+    }
+}
+
+function showParsedResultChanged(element) {
+    if (!element.checked) {
+        showPrizes = 0;
+    } else {
+        showPrizes = 1;
+    }
+    togglePrizesVisibility();
+}
+
+function togglePrizesVisibility() {
+    var prizesDiv_ = document.getElementById("prizes");
+    if (!showPrizes) {
+        prizesDiv_.style.visibility = "hidden";
+        prizesdiv_.style.display = "none";
+    } else {
+        prizesDiv_.style.visibility = "visible";
+        prizesdiv_.style.display = "block";
     }
 }
 

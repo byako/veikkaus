@@ -82,8 +82,6 @@ def parse_draws(json_full_result) -> list:
     Structure of draw record has changed over time, this is a safe parser that
     takes only needed data from full draw info
     """
-    draw = deepcopy(TEMPLATE_DRAW)
-
     full_draws = None
     if isinstance(json_full_result, dict):
         full_draws = json_full_result["draws"]
@@ -99,6 +97,7 @@ def parse_draws(json_full_result) -> list:
         draw_date = datetime.datetime.fromtimestamp(
             full_draw["drawTime"] / 1000
         )
+        draw = deepcopy(TEMPLATE_DRAW)
         draw["id"] = full_draw["id"]
         draw["year"] = draw_date.isocalendar()[0]
         draw["week"] = draw_date.isocalendar()[1]
@@ -118,7 +117,7 @@ def parse_draws(json_full_result) -> list:
         ][0]
         if top_tier["shareCount"] > 0:
             draw["jackpot_won"] = True
-        draws.append(deepcopy(draw))
+        draws.append(draw)
 
     return draws
 

@@ -7,10 +7,10 @@ function showFilter(filterDiv) {
 
     var beforeCoutnerDiv = 
 
-    for (int i=0; i<games[game].numbers; i++) {
+    for (var int i = 0; i < games[game].numbers; i++) {
         showFilterAddRow("numbers",filterDiv); /* uses "numbersStart" and "numbersLimit" */
     }
-    for (int i=0; i<games[game].additionalNumbers; i++) {
+    for (var int i = 0; i < games[game].additionalNumbers; i++) {
         showFilterAddRow("additionalNumbers",filterDiv); /* uses "additionalNumbersStart" and "additionalNumbersLimit" */
     }
 }

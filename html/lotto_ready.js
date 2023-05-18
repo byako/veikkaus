@@ -71,7 +71,7 @@ function loadCookies() {
             else
                 chkbx.checked = False;
         }
-        renderFields();
+        toggleFieldsVisibility();
     }
 }
 
