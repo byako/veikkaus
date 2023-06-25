@@ -77,6 +77,7 @@ function loadCookies() {
 
 function adjustHeight() {
     var tdiv = document.getElementById("_oldResultsTable_");
+    console.log("Adjusting old results table height")
     tdiv.tBodies[0].style.height = "" + window.innerHeight - 400 + "px";
 }
 
@@ -87,9 +88,9 @@ $(document).ready(function() {
         // space and arrow keys
         if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
             if (e.keyCode == 38) {
-                prevResultShow();
-            } else if (e.keyCode == 40) {
                 nextResultShow();
+            } else if (e.keyCode == 40) {
+                prevResultShow();
             }
             e.preventDefault();
         }

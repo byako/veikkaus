@@ -108,14 +108,14 @@ function drawHistory() {
             $("#histLengthInput").value = histLength;
         }
         var tableRows = 0;
-        console.log("loading " + histLength + " results out of " + roundsCounter + " available");
-        for (var i=(roundsCounter - histLength); i <= roundsCounter; i++) {
+        console.log("loading " + histLength + " results in reverse out of " + roundsCounter + " available");
+        for (var i=roundsCounter; i > (roundsCounter - histLength); i--) {
             var row_ = table_.insertRow(tableRows);
             if (row_ == undefined) {
                 console.log("couldn't insert row to table");
                 return;
             }
-            console.log("Adding result " + results[i].id)
+            console.log("Adding result idx " + i + ", result ID: " + results[i].id)
             tableRows++;
             row_.id = "orRow" + i;
             results[i].primary.sort();
@@ -643,13 +643,13 @@ function rerender(newRound) {
 }
 
 function prevResultShow() {
-    if (selectedRound > (roundsCounter - histLength)) {
+    if (selectedRound > (roundsCounter - histLength + 1)) {
         rerender(selectedRound-1);
     }
 }
 
 function nextResultShow() {
-    if (selectedRound <= (roundsCounter - 1)) {
+    if (selectedRound <= roundsCounter - 1) {
         rerender(selectedRound + 1);
     }
 }
