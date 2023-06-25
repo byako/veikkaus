@@ -41,7 +41,7 @@ def print_latest_result_date(params: dict) -> str:
     get the date of latest saved result
     """
     results = load_latest_file(params)
-    print("%s / %s : %s" % (results[-1]["year"], results[-1]["week"], results[-1]["date"]))
+    print("%s / w%s (id %s) : %s" % (results[-1]["year"], results[-1]["week"], results[-1]["id"], results[-1]["date"]))
 
 
 def print_draws(parsed_draws: list) -> None:
