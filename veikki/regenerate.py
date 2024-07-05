@@ -47,7 +47,7 @@ def regenerate_latest(params) -> None:
                     draws[0]["week"],
                 )
             for result in draws:
-                print("Adding result %s - %s" % (result["id"], result["date"]))
+                print("Adding result %s - %s from %s" % (result["id"], result["date"], filename))
                 results.append(deepcopy(result))
 
     with open(params["latest_file"], "w") as latest_file:

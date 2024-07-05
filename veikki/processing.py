@@ -392,6 +392,7 @@ def stat_relative(params):
     plot_history(all_means, all_means_avg, "/tmp/means.png")
     plot_history(all_geomeans, all_geomeans_avg, "/tmp/geomeans.png")
     print("Done plotting relative stats")
+    print("/tmp/means.png /tmp/geomeans.png")
 
 
 def _prepare_to_process(params):
@@ -438,8 +439,8 @@ def do_process(params):
     """
     _prepare_to_process(params)
     # find_duplicates(params["results"])
-    # project(params)
-    stat_relative(params)
+    project(params)
+    # stat_relative(params)
 
 
 def process_optimize(params):

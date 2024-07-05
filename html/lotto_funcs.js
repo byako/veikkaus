@@ -593,6 +593,13 @@ function processExtendedResultInfo(draw) {
         drawDateDiv.innerHTML = ("" + drawtime).replace(/ GMT\+0.*/, '');
     }
 
+    var jackpotDiv = document.getElementById("jackpot");
+    if (jackpotDiv) {
+        var jackpot = ("" + draw["jackpots"][0]["amount"]).replace(/00000000$/, " 000 000") + " €";
+        console.log("Setting jackpot: " + jackpot);
+        jackpotDiv.innerHTML = "Jackpot: " + jackpot;
+    }
+
     /* render table with payable prizes */
     var prizes = document.getElementById("prizesTable");
     if (!prizes) {

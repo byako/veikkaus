@@ -30,7 +30,10 @@ def append_to_latest(new_results: list, params: dict) -> None:
         with open(params["latest_file"], "r+") as json_file:
             results = json.load(json_file)
             for new_result in new_results:
-                results.append(new_result)
+                if results[-1]["id"] != new_result["id"]:
+                    results.append(new_result)
+                else:
+                    logger.info("skipping previously saved result %d", new_result["id"])
             json_file.seek(0)
             json.dump(results, json_file)
     else:

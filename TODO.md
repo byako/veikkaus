@@ -1,0 +1,2 @@
+- avg / median of single-dimentional distance between numbers
+- avg / median of two-dimentional shape / area of numbers
